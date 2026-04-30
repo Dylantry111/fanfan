@@ -173,11 +173,12 @@ function Badge({ children, tone = "slate" }) {
   return <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${classes[tone] || classes.slate}`}>{children}</span>;
 }
 
-function MacroPill({ label, value, suffix = "g" }) {
+function MacroPill({ label, value, suffix = "g", hint }) {
   return (
-    <div className="rounded-2xl border bg-white/80 p-4 shadow-sm">
-      <div className="text-sm text-slate-500">{label}</div>
-      <div className="mt-1 text-2xl font-semibold text-slate-900">{value}{suffix}</div>
+    <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm">
+      <div className="text-xs font-medium tracking-wide text-slate-500">{label}</div>
+      <div className="mt-2 text-2xl font-bold text-slate-900">{value}{suffix}</div>
+      {hint ? <div className="mt-1 text-xs text-slate-500">{hint}</div> : null}
     </div>
   );
 }
@@ -247,31 +248,35 @@ function MealCard({ meal, dailyMacros }) {
           </div>
           <MiniIcon label="餐" />
         </div>
-        <div className="mt-4 grid grid-cols-4 gap-2 text-center">
-          <div className="rounded-xl bg-white/10 p-2"><div className="text-xs">热量</div><div className="font-semibold">{round(target.kcal)}</div></div>
-          <div className="rounded-xl bg-white/10 p-2"><div className="text-xs">碳水</div><div className="font-semibold">{round(target.carbs)}g</div></div>
-          <div className="rounded-xl bg-white/10 p-2"><div className="text-xs">蛋白</div><div className="font-semibold">{round(target.protein)}g</div></div>
-          <div className="rounded-xl bg-white/10 p-2"><div className="text-xs">脂肪</div><div className="font-semibold">{round(target.fat)}g</div></div>
+        <div className="mt-4 grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+          <div className="rounded-2xl bg-white/10 p-3"><div className="text-xs text-slate-300">热量</div><div className="mt-1 text-lg font-semibold">{round(target.kcal)}</div></div>
+          <div className="rounded-2xl bg-white/10 p-3"><div className="text-xs text-slate-300">碳水</div><div className="mt-1 text-lg font-semibold">{round(target.carbs)}g</div></div>
+          <div className="rounded-2xl bg-white/10 p-3"><div className="text-xs text-slate-300">蛋白</div><div className="mt-1 text-lg font-semibold">{round(target.protein)}g</div></div>
+          <div className="rounded-2xl bg-white/10 p-3"><div className="text-xs text-slate-300">脂肪</div><div className="mt-1 text-lg font-semibold">{round(target.fat)}g</div></div>
         </div>
       </div>
-      <div className="p-5">
-        <div className="mb-3 flex items-center gap-2">
-          <MiniIcon label="主" />
-          <h3 className="font-semibold">主食选择：任选一种</h3>
-        </div>
-        <div className="grid gap-3 md:grid-cols-2">
-          {carbFoods.slice(0, 6).map((food) => <FoodCard key={food.id} food={food} target={target.carbs} macro="carbs" />)}
-        </div>
+      <div className="space-y-6 p-5">
+        <section>
+          <div className="mb-3 flex items-center gap-2">
+            <MiniIcon label="主" />
+            <h3 className="font-semibold">主食任选 1 种</h3>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {carbFoods.slice(0, 6).map((food) => <FoodCard key={food.id} food={food} target={target.carbs} macro="carbs" />)}
+          </div>
+        </section>
 
-        <div className="mb-3 mt-6 flex items-center gap-2">
-          <MiniIcon label="蛋" />
-          <h3 className="font-semibold">蛋白质选择：任选一种</h3>
-        </div>
-        <div className="grid gap-3 md:grid-cols-2">
-          {proteinFoods.slice(0, 6).map((food) => <FoodCard key={food.id} food={food} target={target.protein} macro="protein" />)}
-        </div>
+        <section>
+          <div className="mb-3 flex items-center gap-2">
+            <MiniIcon label="蛋" />
+            <h3 className="font-semibold">蛋白任选 1 种</h3>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {proteinFoods.slice(0, 6).map((food) => <FoodCard key={food.id} food={food} target={target.protein} macro="protein" />)}
+          </div>
+        </section>
 
-        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">脂肪策略：系统内部按本餐约 {round(target.fat)}g 脂肪上限控制。用户执行层不要求精算油脂，默认建议正常炒菜、少油汤、避免肥肉和油炸。</div>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">脂肪策略：本餐约 {round(target.fat)}g 作为上限参考。执行时不要求死磕每一克油脂，默认少油、避开肥肉和油炸即可。</div>
       </div>
     </CardShell>
   );
@@ -352,26 +357,38 @@ export default function NutritionWebToolMVP() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 p-4 text-slate-900 md:p-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <Badge tone="dark">MVP Prototype</Badge>
-              <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">AI 生活化减脂配餐工具</h1>
-              <p className="mt-3 max-w-3xl text-slate-600">第一版原型：用户输入身体数据，系统自动计算每日碳蛋脂目标，再把纯营养克数换算成食材实际克重和生活单位。</p>
-            </div>
-            <div className="flex gap-2">
-              <button className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">拍照识别：后续</button>
-              <button className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm">重新计算</button>
+    <div className="min-h-screen bg-slate-100 px-3 py-4 text-slate-900 sm:px-4 md:px-8 md:py-8">
+      <div className="mx-auto max-w-7xl space-y-5">
+        <CardShell className="overflow-hidden border-none bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white shadow-xl">
+          <div className="p-5 sm:p-6">
+            <div className="flex flex-col gap-4">
+              <div>
+                <Badge tone="blue">饭饭 · 手机优先版</Badge>
+                <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">减脂配餐，一眼看懂</h1>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">输入你的身体数据，系统会自动算出一天热量、碳水、蛋白和脂肪目标，再换成更容易执行的食材份量。</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl bg-white/10 p-4">
+                  <div className="text-xs text-slate-300">当前模式</div>
+                  <div className="mt-1 text-base font-semibold">{form.mealMode === "three" ? "三餐分配" : "三餐 + 零食额度"}</div>
+                </div>
+                <div className="rounded-2xl bg-white/10 p-4">
+                  <div className="text-xs text-slate-300">目标热量</div>
+                  <div className="mt-1 text-base font-semibold">{round(result.kcal)} kcal</div>
+                </div>
+                <div className="rounded-2xl bg-white/10 p-4">
+                  <div className="text-xs text-slate-300">蛋白目标</div>
+                  <div className="mt-1 text-base font-semibold">{round(result.protein)} g</div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </CardShell>
 
-        <div className="grid gap-5 lg:grid-cols-12">
-          <CardShell className="h-fit lg:col-span-4">
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
+          <CardShell className="h-fit lg:sticky lg:top-6 lg:col-span-4">
             <div className="p-5">
-              <div className="mb-4 flex items-center gap-2"><MiniIcon label="算" /><h2 className="text-xl font-semibold">用户数据</h2></div>
+              <div className="mb-4 flex items-center gap-2"><MiniIcon label="算" /><h2 className="text-xl font-semibold">你的数据</h2></div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2"><FieldLabel>性别</FieldLabel><SelectField value={form.sex} onChange={(value) => set("sex", value)} options={[{ value: "male", label: "男性" }, { value: "female", label: "女性" }]} /></div>
                 <div><FieldLabel>年龄</FieldLabel><NumberField value={form.age} onChange={(value) => set("age", value)} /></div>
@@ -381,38 +398,42 @@ export default function NutritionWebToolMVP() {
                 <div className="col-span-2"><FieldLabel>目标</FieldLabel><SelectField value={form.goal} onChange={(value) => set("goal", value)} options={Object.entries(goalMap).map(([value, item]) => ({ value, label: item.label }))} /></div>
                 <div className="col-span-2"><FieldLabel>餐次模式</FieldLabel><SelectField value={form.mealMode} onChange={(value) => set("mealMode", value)} options={[{ value: "three", label: "三餐" }, { value: "snack", label: "三餐 + 零食/宵夜额度" }]} /></div>
               </div>
-              <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">当前营养数据为原型内置示例。正式版应导入 USDA / 中国食物成分表等权威数据库，并固化版本。</div>
+              <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-900">当前是原型版，营养数据仍是内置示例。正式版再接权威食物数据库和拍照识别。</div>
             </div>
           </CardShell>
 
           <div className="space-y-5 lg:col-span-8">
             <CardShell>
               <div className="p-5">
-                <h2 className="mb-4 text-xl font-semibold">计算结果</h2>
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-                  <MacroPill label="基础代谢" value={round(result.BMR)} suffix=" kcal" />
-                  <MacroPill label="日常消耗" value={round(result.TDEE)} suffix=" kcal" />
-                  <MacroPill label="目标热量" value={round(result.kcal)} suffix=" kcal" />
-                  <MacroPill label="蛋白质" value={round(result.protein)} />
-                  <MacroPill label="碳水" value={round(result.carbs)} />
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h2 className="text-xl font-semibold">今日目标</h2>
+                  <Badge tone="green">已自动计算</Badge>
                 </div>
-                <div className="mt-3 grid gap-3 md:grid-cols-3">
-                  <div className="rounded-2xl bg-slate-50 p-4"><div className="text-sm text-slate-500">脂肪预算</div><div className="text-2xl font-semibold">{round(result.fat)}g</div><div className="mt-1 text-xs text-slate-500">用户层不强制精算，系统层用于控风险。</div></div>
-                  <div className="rounded-2xl bg-slate-50 p-4 md:col-span-2"><div className="text-sm text-slate-500">默认规则</div><div className="mt-1 text-sm leading-6 text-slate-700">蛋白质按体重 × 1.8g；脂肪按目标热量 25%；剩余热量给碳水。减脂默认热量缺口 500 kcal，并设置最低热量保护。</div></div>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+                  <MacroPill label="基础代谢" value={round(result.BMR)} suffix=" kcal" hint="静息消耗" />
+                  <MacroPill label="日常消耗" value={round(result.TDEE)} suffix=" kcal" hint="含活动量" />
+                  <MacroPill label="目标热量" value={round(result.kcal)} suffix=" kcal" hint="减脂日推荐" />
+                  <MacroPill label="蛋白质" value={round(result.protein)} hint="优先吃够" />
+                  <MacroPill label="碳水" value={round(result.carbs)} hint="主食参考" />
+                </div>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-3xl bg-slate-50 p-4"><div className="text-sm text-slate-500">脂肪预算</div><div className="mt-1 text-2xl font-semibold">{round(result.fat)}g</div><div className="mt-1 text-xs text-slate-500">执行层不强制精算，用来防止油脂超标。</div></div>
+                  <div className="rounded-3xl bg-slate-50 p-4"><div className="text-sm text-slate-500">默认规则</div><div className="mt-1 text-sm leading-6 text-slate-700">蛋白按体重 × 1.8g；脂肪按目标热量 25%；剩余热量给碳水，并设置最低热量保护。</div></div>
                 </div>
               </div>
             </CardShell>
 
-            <div>
-              <div className="mb-5 flex flex-wrap gap-2 rounded-2xl bg-white p-2 shadow-sm">
-                {tabs.map((tab) => <button key={tab.id} className={`rounded-xl px-4 py-2 text-sm font-medium ${activeTab === tab.id ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"}`} onClick={() => setActiveTab(tab.id)}>{tab.label}</button>)}
+            <div className="rounded-3xl bg-white p-2 shadow-sm">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {tabs.map((tab) => <button key={tab.id} className={`rounded-2xl px-4 py-3 text-sm font-medium transition ${activeTab === tab.id ? "bg-slate-900 text-white shadow-sm" : "bg-slate-50 text-slate-600 hover:bg-slate-100"}`} onClick={() => setActiveTab(tab.id)}>{tab.label}</button>)}
               </div>
-              <div className="space-y-5">
-                {activeTab === "meals" && meals.map((meal) => <MealCard key={meal.id} meal={meal} dailyMacros={result} />)}
-                {activeTab === "dishes" && <DishesPanel />}
-                {activeTab === "shopping" && <ShoppingList />}
-                {activeTab === "tests" && <TestPanel />}
-              </div>
+            </div>
+
+            <div className="space-y-5">
+              {activeTab === "meals" && meals.map((meal) => <MealCard key={meal.id} meal={meal} dailyMacros={result} />)}
+              {activeTab === "dishes" && <DishesPanel />}
+              {activeTab === "shopping" && <ShoppingList />}
+              {activeTab === "tests" && <TestPanel />}
             </div>
           </div>
         </div>
