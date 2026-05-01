@@ -46,12 +46,56 @@ const foods = [
   { id: "cauliflower", name: "花菜", type: "veg", carbs: 5, protein: 1.9, fat: 0.3, kcal: 25, units: [{ label: "一份", grams: 200 }], note: "饱腹感较好。" },
 ];
 
-const dishes = [
-  "番茄炒蛋", "青椒牛肉", "宫保鸡丁", "鱼香肉丝", "回锅肉", "红烧肉", "红烧排骨", "糖醋里脊", "清蒸鱼", "水煮鱼",
-  "水煮牛肉", "麻婆豆腐", "干煸四季豆", "蒜蓉西兰花", "炒青菜", "土豆丝", "酸辣土豆丝", "鸡蛋炒饭", "牛肉炒饭", "扬州炒饭",
-  "蛋炒面", "牛肉面", "鸡汤面", "兰州拉面", "麻辣烫", "冒菜", "火锅", "盖浇饭", "卤肉饭", "叉烧饭",
-  "烧鸭饭", "鸡腿饭", "牛肉盖饭", "黄焖鸡米饭", "煎鸡胸", "鸡胸沙拉", "金枪鱼沙拉", "牛排", "烤鱼", "蒸虾",
-  "炒虾仁", "滑蛋牛肉", "西红柿牛腩", "冬瓜排骨汤", "紫菜蛋花汤", "皮蛋瘦肉粥", "白粥", "燕麦牛奶", "三明治", "全麦面包",
+const dishGuides = [
+  {
+    name: "黄焖鸡米饭",
+    scene: "外卖高频",
+    risk: "主食和酱汁容易超标，鸡皮和额外土豆会把热量继续抬高。",
+    how: ["米饭减到半份或小半碗", "优先挑鸡腿肉本体，少喝酱汁", "加一份青菜补体积感"],
+    fit: "减脂 / 维持",
+  },
+  {
+    name: "番茄炒蛋",
+    scene: "家常菜",
+    risk: "看起来清淡，但鸡蛋数量和炒油会决定脂肪高低。",
+    how: ["蛋控制在 2-3 个", "配一份明确主食，不要边吃边补", "如果蛋白不足，旁边加虾或鸡胸"],
+    fit: "维持 / 增肌",
+  },
+  {
+    name: "麻辣烫 / 冒菜",
+    scene: "自由选菜",
+    risk: "汤底、丸子、宽粉和芝麻酱最容易让热量失控。",
+    how: ["先选虾、鱼片、鸡胸、豆腐", "主食只留 1 份粉/面/土豆", "丸子、肥牛、芝麻酱三选一，不要全上"],
+    fit: "减脂 / 维持",
+  },
+  {
+    name: "火锅",
+    scene: "社交聚餐",
+    risk: "不是火锅本身危险，是无意识续肉、蘸料和主食叠加危险。",
+    how: ["先下蔬菜和瘦肉，后吃主食", "蘸料以酱油、醋、蒜为主", "把肥牛、丸滑、甜饮控制成点缀"],
+    fit: "减脂 / 维持 / 增肌",
+  },
+  {
+    name: "牛肉面",
+    scene: "一餐解决",
+    risk: "面量往往已经够两顿主食，牛肉却不一定够蛋白。",
+    how: ["先判断面量，默认按高碳水处理", "如果想吃得稳，补 1 份蛋或牛肉", "晚餐再减少主食、补蔬菜和蛋白"],
+    fit: "减脂 / 增肌",
+  },
+  {
+    name: "烧鸭饭 / 叉烧饭",
+    scene: "盖饭快餐",
+    risk: "脂肪高，酱汁和双拼很容易直接超出脂肪预算。",
+    how: ["米饭减量", "优先单拼，不要双拼", "当天其他餐把额外油脂压低"],
+    fit: "维持",
+  },
+];
+
+const correctionRules = [
+  { title: "午饭超了怎么办", desc: "晚饭先减主食，不要再减蛋白。把修正重点放在碳水和油脂，不要直接饿过头。" },
+  { title: "晚上想吃宵夜怎么办", desc: "优先用酸奶、蛋白奶、蛋清、虾、黄瓜这类高饱腹低负担组合，别再补第二份主食。" },
+  { title: "今天蛋白不够怎么补", desc: "补蛋白优先顺序：鸡胸 / 虾 / 鱼 / 蛋清 / 无糖酸奶。不要用奶茶、坚果、蛋糕假装补营养。" },
+  { title: "外卖点餐默认规则", desc: "先定蛋白，再定主食，最后补蔬菜；主食和酱汁不同时放开，是最稳的外卖策略。" },
 ];
 
 const mealProfiles = {
@@ -75,9 +119,10 @@ const activityMap = {
 };
 
 const goalMap = {
-  mild_cut: { label: "温和减脂", deficit: 300 },
-  standard_cut: { label: "标准减脂", deficit: 500 },
-  maintain: { label: "维持体重", deficit: 0 },
+  mild_cut: { label: "温和减脂", deficit: 300, proteinFactor: 1.8, fatRatio: 0.25, minKcalMale: 1500, minKcalFemale: 1200 },
+  standard_cut: { label: "标准减脂", deficit: 500, proteinFactor: 1.9, fatRatio: 0.25, minKcalMale: 1500, minKcalFemale: 1200 },
+  maintain: { label: "维持体重", deficit: 0, proteinFactor: 1.6, fatRatio: 0.27, minKcalMale: 1600, minKcalFemale: 1300 },
+  lean_gain: { label: "干净增肌", deficit: -250, proteinFactor: 2, fatRatio: 0.25, minKcalMale: 1700, minKcalFemale: 1400 },
 };
 
 function round(n, digits = 0) {
@@ -124,10 +169,10 @@ function calculateNutrition(form) {
   const selectedGoal = goalMap[form.goal] || goalMap.standard_cut;
   const BMR = bmr({ sex: form.sex, weight, height, age });
   const TDEE = BMR * selectedActivity.factor;
-  const minKcal = form.sex === "male" ? 1500 : 1200;
+  const minKcal = form.sex === "male" ? selectedGoal.minKcalMale : selectedGoal.minKcalFemale;
   const targetKcal = Math.max(TDEE - selectedGoal.deficit, minKcal);
-  const protein = weight * 1.8;
-  const fat = (targetKcal * 0.25) / 9;
+  const protein = weight * selectedGoal.proteinFactor;
+  const fat = (targetKcal * selectedGoal.fatRatio) / 9;
   const carbs = Math.max((targetKcal - protein * 4 - fat * 9) / 4, 0);
   return { BMR, TDEE, kcal: targetKcal, protein, fat, carbs };
 }
@@ -137,6 +182,7 @@ function runSelfTests() {
   const chicken = foods.find((food) => food.id === "chicken");
   const egg = foods.find((food) => food.id === "egg");
   const maleDefault = calculateNutrition({ sex: "male", age: 35, height: 175, weight: 85, activity: "sedentary", goal: "standard_cut" });
+  const leanGain = calculateNutrition({ sex: "male", age: 30, height: 178, weight: 75, activity: "strength", goal: "lean_gain" });
 
   return [
     { name: "男性 BMR：85kg / 175cm / 35岁", pass: nearlyEqual(bmr({ sex: "male", weight: 85, height: 175, age: 35 }), 1773.75, 0.01) },
@@ -145,11 +191,11 @@ function runSelfTests() {
     { name: "40g 蛋白 ≈ 129g 鸡胸肉", pass: nearlyEqual(gramsFor(chicken, "protein", 40), 129.03, 0.1) },
     { name: "鸡蛋 13g 蛋白 ≈ 100g 鸡蛋", pass: nearlyEqual(gramsFor(egg, "protein", 13), 100, 0.1) },
     { name: "0g 目标不会返回无效克重", pass: gramsFor(rice, "carbs", 0) === null },
-    { name: "默认男性目标热量不低于 1500 kcal", pass: maleDefault.kcal >= 1500 },
+    { name: "默认男性目标热量不低于保护线", pass: maleDefault.kcal >= 1500 },
+    { name: "增肌模式热量高于维持逻辑", pass: leanGain.kcal > leanGain.protein * 4 },
     { name: "餐次比例合计为 100%", pass: nearlyEqual(mealProfiles.three.reduce((sum, meal) => sum + meal.ratio, 0), 1, 0.001) },
     { name: "零食模式比例合计为 100%", pass: nearlyEqual(mealProfiles.snack.reduce((sum, meal) => sum + meal.ratio, 0), 1, 0.001) },
-    { name: "菜肴库包含 50 个常见菜肴", pass: dishes.length === 50 },
-    { name: "食材库当前不少于 40 个条目", pass: foods.length >= 40 },
+    { name: "菜肴建议至少 6 条", pass: dishGuides.length >= 6 },
   ];
 }
 
@@ -287,11 +333,28 @@ function DishesPanel() {
     <CardShell>
       <div className="p-5">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-xl font-semibold">常见菜肴库（50个）</h2>
-          <Badge tone="blue">下一步：拆解成食材 + 克重 + 营养</Badge>
+          <div>
+            <h2 className="text-xl font-semibold">常见吃法怎么选</h2>
+            <p className="mt-1 text-sm text-slate-500">不是教你死磕卡路里，而是把常见外卖和家常菜变成更稳的执行策略。</p>
+          </div>
+          <Badge tone="blue">先看风险，再看替换动作</Badge>
         </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {dishes.map((name) => <div key={name} className="rounded-2xl bg-slate-50 p-4 text-sm">{name}</div>)}
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {dishGuides.map((item) => (
+            <div key={item.name} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="font-semibold text-slate-900">{item.name}</div>
+                  <div className="mt-1 text-xs text-slate-500">{item.scene} · 适合 {item.fit}</div>
+                </div>
+                <Badge tone="amber">避坑</Badge>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{item.risk}</p>
+              <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-700">
+                {item.how.map((line) => <li key={line}>• {line}</li>)}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
     </CardShell>
@@ -311,6 +374,54 @@ function ShoppingList() {
           <div className="rounded-2xl bg-slate-50 p-4"><div className="font-semibold">主食</div><ul className="mt-2 space-y-1 text-sm text-slate-600"><li>大米 / 红薯 / 面条</li><li>按一周碳水目标合并</li></ul></div>
           <div className="rounded-2xl bg-slate-50 p-4"><div className="font-semibold">蛋白质</div><ul className="mt-2 space-y-1 text-sm text-slate-600"><li>鸡胸 / 牛肉 / 鱼 / 鸡蛋</li><li>按用户偏好和预算组合</li></ul></div>
           <div className="rounded-2xl bg-slate-50 p-4"><div className="font-semibold">蔬菜与调味</div><ul className="mt-2 space-y-1 text-sm text-slate-600"><li>青菜 300–500g/天</li><li>少油、少糖、高纤维优先</li></ul></div>
+        </div>
+      </div>
+    </CardShell>
+  );
+}
+
+function ActionPanel() {
+  return (
+    <CardShell>
+      <div className="p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <MiniIcon label="修" />
+          <h2 className="text-xl font-semibold">今天吃乱了，怎么修</h2>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          {correctionRules.map((item) => (
+            <div key={item.title} className="rounded-2xl bg-slate-50 p-4">
+              <div className="font-semibold text-slate-900">{item.title}</div>
+              <div className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </CardShell>
+  );
+}
+
+function TrustPanel() {
+  return (
+    <CardShell>
+      <div className="p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <MiniIcon label="信" />
+          <h2 className="text-xl font-semibold">这个参考怎么来的</h2>
+        </div>
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-2xl bg-slate-50 p-4">
+            <div className="font-semibold">算法逻辑</div>
+            <div className="mt-2 text-sm leading-6 text-slate-600">基础代谢 + 活动系数估算日常消耗，再按目标分配热量、蛋白、脂肪和碳水。</div>
+          </div>
+          <div className="rounded-2xl bg-slate-50 p-4">
+            <div className="font-semibold">数据来源</div>
+            <div className="mt-2 text-sm leading-6 text-slate-600">当前为原型内置示例数据，后续应接入更权威的食物营养数据库并校正常见外卖份量。</div>
+          </div>
+          <div className="rounded-2xl bg-slate-50 p-4">
+            <div className="font-semibold">适用范围</div>
+            <div className="mt-2 text-sm leading-6 text-slate-600">适用于日常控饮食、减脂、维持和干净增肌场景，不替代医疗诊断和个体化临床建议。</div>
+          </div>
         </div>
       </div>
     </CardShell>
@@ -351,8 +462,10 @@ export default function NutritionWebToolMVP() {
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
   const tabs = [
     { id: "meals", label: "每餐方案" },
-    { id: "dishes", label: "菜肴层" },
+    { id: "dishes", label: "日常吃法" },
+    { id: "actions", label: "超了怎么修" },
     { id: "shopping", label: "采购清单" },
+    { id: "trust", label: "可信度" },
     { id: "tests", label: "自检" },
   ];
 
@@ -363,22 +476,22 @@ export default function NutritionWebToolMVP() {
           <div className="p-5 sm:p-6">
             <div className="flex flex-col gap-4">
               <div>
-                <Badge tone="blue">饭饭 · 手机优先版</Badge>
-                <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">减脂配餐，一眼看懂</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">输入你的身体数据，系统会自动算出一天热量、碳水、蛋白和脂肪目标，再换成更容易执行的食材份量。</p>
+                <Badge tone="blue">饭饭 · 日常饮食控制助手</Badge>
+                <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">把控饮食这件事，变成你每天真的做得到</h1>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">它不是只告诉你热量和营养素，而是把减脂、维持、增肌目标翻译成更生活化的食材份量、菜肴选择和纠偏动作，让你在外卖、家常菜、聚餐里也能做出更稳的决定。</p>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl bg-white/10 p-4">
-                  <div className="text-xs text-slate-300">当前模式</div>
-                  <div className="mt-1 text-base font-semibold">{form.mealMode === "three" ? "三餐分配" : "三餐 + 零食额度"}</div>
+                  <div className="text-xs text-slate-300">适用人群</div>
+                  <div className="mt-1 text-base font-semibold">想控制饮食但不知道怎么做的人</div>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-4">
-                  <div className="text-xs text-slate-300">目标热量</div>
-                  <div className="mt-1 text-base font-semibold">{round(result.kcal)} kcal</div>
+                  <div className="text-xs text-slate-300">当前目标</div>
+                  <div className="mt-1 text-base font-semibold">{goalMap[form.goal]?.label}</div>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-4">
-                  <div className="text-xs text-slate-300">蛋白目标</div>
-                  <div className="mt-1 text-base font-semibold">{round(result.protein)} g</div>
+                  <div className="text-xs text-slate-300">核心输出</div>
+                  <div className="mt-1 text-base font-semibold">每餐份量 + 日常吃法 + 超标修正</div>
                 </div>
               </div>
             </div>
@@ -398,7 +511,7 @@ export default function NutritionWebToolMVP() {
                 <div className="col-span-2"><FieldLabel>目标</FieldLabel><SelectField value={form.goal} onChange={(value) => set("goal", value)} options={Object.entries(goalMap).map(([value, item]) => ({ value, label: item.label }))} /></div>
                 <div className="col-span-2"><FieldLabel>餐次模式</FieldLabel><SelectField value={form.mealMode} onChange={(value) => set("mealMode", value)} options={[{ value: "three", label: "三餐" }, { value: "snack", label: "三餐 + 零食/宵夜额度" }]} /></div>
               </div>
-              <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-900">当前是原型版，营养数据仍是内置示例。正式版再接权威食物数据库和拍照识别。</div>
+              <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-900">第一版先解决“今天到底该怎么吃”这个核心问题：把数字翻译成可执行的主食、蛋白、菜肴和纠偏建议。</div>
             </div>
           </CardShell>
 
@@ -412,19 +525,19 @@ export default function NutritionWebToolMVP() {
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
                   <MacroPill label="基础代谢" value={round(result.BMR)} suffix=" kcal" hint="静息消耗" />
                   <MacroPill label="日常消耗" value={round(result.TDEE)} suffix=" kcal" hint="含活动量" />
-                  <MacroPill label="目标热量" value={round(result.kcal)} suffix=" kcal" hint="减脂日推荐" />
+                  <MacroPill label="目标热量" value={round(result.kcal)} suffix=" kcal" hint="按当前目标生成" />
                   <MacroPill label="蛋白质" value={round(result.protein)} hint="优先吃够" />
                   <MacroPill label="碳水" value={round(result.carbs)} hint="主食参考" />
                 </div>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-3xl bg-slate-50 p-4"><div className="text-sm text-slate-500">脂肪预算</div><div className="mt-1 text-2xl font-semibold">{round(result.fat)}g</div><div className="mt-1 text-xs text-slate-500">执行层不强制精算，用来防止油脂超标。</div></div>
-                  <div className="rounded-3xl bg-slate-50 p-4"><div className="text-sm text-slate-500">默认规则</div><div className="mt-1 text-sm leading-6 text-slate-700">蛋白按体重 × 1.8g；脂肪按目标热量 25%；剩余热量给碳水，并设置最低热量保护。</div></div>
+                  <div className="rounded-3xl bg-slate-50 p-4"><div className="text-sm text-slate-500">默认规则</div><div className="mt-1 text-sm leading-6 text-slate-700">不同目标会切换热量和蛋白策略：减脂偏保守、维持更平衡、增肌提高蛋白和总热量。</div></div>
                 </div>
               </div>
             </CardShell>
 
             <div className="rounded-3xl bg-white p-2 shadow-sm">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-6">
                 {tabs.map((tab) => <button key={tab.id} className={`rounded-2xl px-4 py-3 text-sm font-medium transition ${activeTab === tab.id ? "bg-slate-900 text-white shadow-sm" : "bg-slate-50 text-slate-600 hover:bg-slate-100"}`} onClick={() => setActiveTab(tab.id)}>{tab.label}</button>)}
               </div>
             </div>
@@ -432,7 +545,9 @@ export default function NutritionWebToolMVP() {
             <div className="space-y-5">
               {activeTab === "meals" && meals.map((meal) => <MealCard key={meal.id} meal={meal} dailyMacros={result} />)}
               {activeTab === "dishes" && <DishesPanel />}
+              {activeTab === "actions" && <ActionPanel />}
               {activeTab === "shopping" && <ShoppingList />}
+              {activeTab === "trust" && <TrustPanel />}
               {activeTab === "tests" && <TestPanel />}
             </div>
           </div>
