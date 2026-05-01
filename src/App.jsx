@@ -30,6 +30,38 @@ const foods = [
   { id: "pork", name: "瘦猪肉", type: "protein", carbs: 0, protein: 27, fat: 10, kcal: 200, units: [{ label: "掌心", grams: 100 }], note: "里脊和瘦肉更合适。", shortHint: "掌心瘦肉" },
 ];
 
+
+const foodMeta = {
+  rice: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.86, secondaryMacro: "protein", secondaryRatio: 0.08 },
+  noodle: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.72, secondaryMacro: "protein", secondaryRatio: 0.12 },
+  mantou: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.84, secondaryMacro: "protein", secondaryRatio: 0.13 },
+  bread: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.69, secondaryMacro: "protein", secondaryRatio: 0.16 },
+  oats: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.63, secondaryMacro: "protein", secondaryRatio: 0.14 },
+  sweet_potato: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.82, secondaryMacro: "protein", secondaryRatio: 0.07 },
+  corn: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.7, secondaryMacro: "protein", secondaryRatio: 0.11 },
+  porridge: { role: "staple", form: "light", primaryMacro: "carbs", primaryRatio: 0.88, secondaryMacro: "protein", secondaryRatio: 0.09 },
+  dumpling: { role: "dish", form: "solid", primaryMacro: "carbs", primaryRatio: 0.51, secondaryMacro: "protein", secondaryRatio: 0.15 },
+  baozi: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.6, secondaryMacro: "protein", secondaryRatio: 0.12 },
+  rice_noodle: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.87, secondaryMacro: "protein", secondaryRatio: 0.1 },
+  chicken: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.75, secondaryMacro: "fat", secondaryRatio: 0.2 },
+  chicken_leg: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.5, secondaryMacro: "fat", secondaryRatio: 0.47 },
+  beef: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.42, secondaryMacro: "fat", secondaryRatio: 0.54 },
+  fish: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.8, secondaryMacro: "fat", secondaryRatio: 0.16 },
+  shrimp: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.8, secondaryMacro: "fat", secondaryRatio: 0.09 },
+  egg_boiled: { role: "protein", form: "single", primaryMacro: "protein", primaryRatio: 0.34, secondaryMacro: "fat", secondaryRatio: 0.58 },
+  egg_steamed: { role: "dish", form: "soft", primaryMacro: "protein", primaryRatio: 0.36, secondaryMacro: "fat", secondaryRatio: 0.54 },
+  egg_fried: { role: "protein", form: "single", primaryMacro: "protein", primaryRatio: 0.27, secondaryMacro: "fat", secondaryRatio: 0.6 },
+  egg_tomato: { role: "dish", form: "dish", primaryMacro: "protein", primaryRatio: 0.28, secondaryMacro: "fat", secondaryRatio: 0.56 },
+  tofu: { role: "dish", form: "soft", primaryMacro: "protein", primaryRatio: 0.4, secondaryMacro: "fat", secondaryRatio: 0.54 },
+  milk: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.33 },
+  yogurt: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.34 },
+  pork: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.51, secondaryMacro: "fat", secondaryRatio: 0.45 },
+};
+
+function getFoodMeta(food) {
+  return foodMeta[food?.id] || { role: food?.type === "carb" ? "staple" : "protein", form: "solid", primaryMacro: food?.type === "carb" ? "carbs" : "protein", primaryRatio: 0.7, secondaryMacro: food?.type === "carb" ? "protein" : "fat", secondaryRatio: 0.15 };
+}
+
 const dishLibrary = [
   { id: "breakfast-oats-egg", meal: "breakfast", scene: "home", category: "家常早餐", name: "燕麦鸡蛋早餐杯", tags: ["早餐", "家里", "高蛋白"], carbFoodId: "oats", proteinFoodId: "egg_boiled", note: "很稳，适合早上不想想太多的时候。" },
   { id: "breakfast-bread-yogurt", meal: "breakfast", scene: "convenience", category: "便利店早餐", name: "全麦吐司 + 无糖酸奶", tags: ["早餐", "便利店", "快选"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "上班路上最容易落地的一种组合。" },
@@ -180,43 +212,50 @@ function practicalPortion(food, grams) {
 function buildMealItems(dish, targets) {
   const carbFood = foods.find((food) => food.id === dish.carbFoodId);
   const proteinFood = foods.find((food) => food.id === dish.proteinFoodId);
-  const supportMap = {
-    breakfast: ["egg_boiled", "milk", "yogurt", "bread"],
-    lunch: ["egg_tomato", "tofu", "milk"],
-    dinner: ["egg_tomato", "tofu", "yogurt"],
-    snack: ["milk", "yogurt", "egg_boiled", "bread"],
+  const mealTemplates = {
+    breakfast: { stapleShare: 0.55, proteinShare: 0.45, support: ["drink", "protein"] },
+    lunch: { stapleShare: 0.42, proteinShare: 0.58, support: ["dish"] },
+    dinner: { stapleShare: 0.35, proteinShare: 0.65, support: ["dish"] },
+    snack: { stapleShare: 0.4, proteinShare: 0.6, support: ["drink", "protein"] },
   };
-  const supportIds = (supportMap[dish.meal] || []).filter((id) => id !== dish.carbFoodId && id !== dish.proteinFoodId);
-  const supportFoods = supportIds.map((id) => foods.find((food) => food.id === id)).filter(Boolean);
+  const template = mealTemplates[dish.meal] || mealTemplates.lunch;
   const items = [];
-
   const carbTarget = Math.max(Number(targets.carbs) || 0, 0);
   const proteinTarget = Math.max(Number(targets.protein) || 0, 0);
-  const mainCarbTarget = supportFoods.length ? carbTarget * 0.72 : carbTarget * 0.85;
-  const mainProteinTarget = supportFoods.length ? proteinTarget * 0.62 : proteinTarget * 0.82;
+  const used = new Set([dish.carbFoodId, dish.proteinFoodId]);
 
-  if (carbFood && mainCarbTarget > 0) {
-    items.push({ name: carbFood.name, text: practicalPortion(carbFood, gramsFor(carbFood, "carbs", mainCarbTarget)).text });
+  if (carbFood && carbTarget > 0) {
+    items.push({ name: carbFood.name, text: practicalPortion(carbFood, gramsFor(carbFood, "carbs", carbTarget * template.stapleShare)).text, role: getFoodMeta(carbFood).role });
   }
-  if (proteinFood && mainProteinTarget > 0) {
-    items.push({ name: proteinFood.name, text: practicalPortion(proteinFood, gramsFor(proteinFood, "protein", mainProteinTarget)).text });
+  if (proteinFood && proteinTarget > 0) {
+    items.push({ name: proteinFood.name, text: practicalPortion(proteinFood, gramsFor(proteinFood, "protein", proteinTarget * template.proteinShare)).text, role: getFoodMeta(proteinFood).role });
   }
 
-  let remainCarbs = Math.max(carbTarget - mainCarbTarget, 0);
-  let remainProtein = Math.max(proteinTarget - mainProteinTarget, 0);
+  let remainCarbs = Math.max(carbTarget - carbTarget * template.stapleShare, 0);
+  let remainProtein = Math.max(proteinTarget - proteinTarget * template.proteinShare, 0);
 
-  supportFoods.slice(0, 2).forEach((food, index) => {
-    const last = index === Math.min(supportFoods.length, 2) - 1;
-    const useProtein = food.protein >= food.carbs;
-    const macro = useProtein ? "protein" : "carbs";
-    const target = useProtein ? (last ? remainProtein : remainProtein * 0.65) : (last ? remainCarbs : remainCarbs * 0.65);
+  template.support.forEach((role) => {
+    const supportFood = foods.find((food) => {
+      if (used.has(food.id)) return false;
+      const meta = getFoodMeta(food);
+      if (meta.role !== role && !(role === "protein" && meta.role === "dish") && !(role === "dish" && meta.role === "protein")) return false;
+      if (dish.meal === "breakfast" && role === "drink") return meta.role === "drink" && food.id !== proteinFood?.id;
+      return true;
+    });
+    if (!supportFood) return;
+    used.add(supportFood.id);
+    const meta = getFoodMeta(supportFood);
+    const macro = meta.primaryMacro === "carbs" ? "carbs" : "protein";
+    const target = macro === "carbs" ? remainCarbs : remainProtein;
     if (target <= 0) return;
-    items.push({ name: food.name, text: practicalPortion(food, gramsFor(food, macro, target)).text });
-    if (useProtein) remainProtein = Math.max(remainProtein - target, 0);
-    else remainCarbs = Math.max(remainCarbs - target, 0);
+    const share = role === "drink" ? 0.55 : 0.75;
+    const grams = gramsFor(supportFood, macro, target * share);
+    items.push({ name: supportFood.name, text: practicalPortion(supportFood, grams).text, role: meta.role });
+    if (macro === "carbs") remainCarbs = Math.max(remainCarbs - target * share, 0);
+    else remainProtein = Math.max(remainProtein - target * share, 0);
   });
 
-  return items.filter((item, index, arr) => item.text !== "—" && arr.findIndex((x) => x.name === item.name) === index).slice(0, 4);
+  return items.filter((item, index, arr) => item.text !== "—" && arr.findIndex((x) => x.name === item.name) === index).slice(0, dish.meal === "breakfast" ? 3 : 4);
 }
 
 function scoreDish(dish, preferences, historyCounts) { const dishName = dish.name; const foodIds = [dish.carbFoodId, dish.proteinFoodId].filter(Boolean); if (preferences.dislikedDishes.includes(dishName)) return -999; if (foodIds.some((id) => preferences.avoidFoods.includes(id))) return -999; let score = 0; if (preferences.favoriteDishes.includes(dishName)) score += 4; if (foodIds.some((id) => preferences.favoriteFoods.includes(id))) score += 3; if (preferences.preferredScenes.includes(dish.scene)) score += 2; score += (historyCounts[dishName] || 0) * 0.8; return score; }
