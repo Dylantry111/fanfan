@@ -2,17 +2,13 @@ import React, { useMemo, useState } from "react";
 
 const foods = [
   { id: "rice", name: "熟米饭", type: "carb", carbs: 28, protein: 2.6, fat: 0.3, kcal: 130, units: [{ label: "碗", grams: 110 }], note: "适合日常主食，外卖常见。", shortHint: "小碗米饭" },
-  { id: "noodle", name: "面条", type: "carb", carbs: 25, protein: 4, fat: 1, kcal: 138, units: [{ label: "碗", grams: 220 }], note: "一碗面通常主食量偏高。", shortHint: "半碗到一碗面量" },
+  { id: "noodle", name: "面条", type: "carb", carbs: 25, protein: 4, fat: 1, kcal: 138, units: [{ label: "碗", grams: 220 }], note: "一碗面通常主食量偏高。", shortHint: "面量偏高" },
   { id: "mantou", name: "馒头", type: "carb", carbs: 47, protein: 7, fat: 1, kcal: 223, units: [{ label: "个", grams: 100 }], note: "同等碳水下，比米饭实际克重少。", shortHint: "中等馒头" },
-  { id: "baozi", name: "包子", type: "carb", carbs: 30, protein: 6, fat: 5, kcal: 200, units: [{ label: "个", grams: 120 }], note: "含馅料，脂肪和热量波动较大。", shortHint: "常规肉包" },
-  { id: "bread", name: "面包", type: "carb", carbs: 50, protein: 8, fat: 4, kcal: 260, units: [{ label: "片", grams: 30 }], note: "早餐常见，注意甜面包脂肪糖分更高。", shortHint: "切片面包" },
+  { id: "bread", name: "全麦面包", type: "carb", carbs: 43, protein: 10, fat: 4, kcal: 250, units: [{ label: "片", grams: 35 }], note: "优先选配料简单的。", shortHint: "全麦切片" },
   { id: "oats", name: "燕麦", type: "carb", carbs: 60, protein: 13, fat: 7, kcal: 380, units: [{ label: "份", grams: 50 }], note: "适合早餐，饱腹感较好。", shortHint: "4-5勺干燕麦" },
   { id: "sweet_potato", name: "红薯", type: "carb", carbs: 20, protein: 1.6, fat: 0.1, kcal: 90, units: [{ label: "个", grams: 220 }], note: "饱腹感强，适合减脂。", shortHint: "中等红薯" },
-  { id: "potato", name: "土豆", type: "carb", carbs: 17, protein: 2, fat: 0.1, kcal: 77, units: [{ label: "个", grams: 180 }], note: "蒸煮更适合，油炸不适合。", shortHint: "中等土豆" },
-  { id: "corn", name: "玉米", type: "carb", carbs: 21, protein: 3.4, fat: 1.2, kcal: 96, units: [{ label: "根", grams: 200 }], note: "可替代部分主食。", shortHint: "1根玉米" },
-  { id: "porridge", name: "白粥", type: "carb", carbs: 10, protein: 1.1, fat: 0.1, kcal: 45, units: [{ label: "碗", grams: 250 }], note: "水分高，同等碳水需要更大克重。", shortHint: "1碗白粥" },
-  { id: "dumpling", name: "饺子", type: "carb", carbs: 28, protein: 8, fat: 8, kcal: 220, units: [{ label: "个", grams: 25 }], note: "主食和肉馅混合，脂肪波动较大。", shortHint: "家常饺子" },
-  { id: "whole_wheat_bread", name: "全麦面包", type: "carb", carbs: 43, protein: 10, fat: 4, kcal: 250, units: [{ label: "片", grams: 35 }], note: "优先选配料简单的。", shortHint: "全麦切片" },
+  { id: "corn", name: "玉米", type: "carb", carbs: 21, protein: 3.4, fat: 1.2, kcal: 96, units: [{ label: "根", grams: 200 }], note: "可替代部分主食。", shortHint: "整根玉米" },
+  { id: "porridge", name: "白粥", type: "carb", carbs: 10, protein: 1.1, fat: 0.1, kcal: 45, units: [{ label: "碗", grams: 250 }], note: "水分高，同等碳水需要更大克重。", shortHint: "一碗白粥" },
 
   { id: "chicken", name: "鸡胸肉", type: "protein", carbs: 0, protein: 31, fat: 3.6, kcal: 165, units: [{ label: "掌心", grams: 120 }], note: "高蛋白低脂，最稳的减脂肉类。", shortHint: "掌心厚度" },
   { id: "chicken_leg", name: "鸡腿肉", type: "protein", carbs: 0, protein: 24, fat: 10, kcal: 190, units: [{ label: "只", grams: 130 }], note: "比鸡胸脂肪高，去皮更合适。", shortHint: "去骨鸡腿" },
@@ -20,23 +16,27 @@ const foods = [
   { id: "fish", name: "鱼肉", type: "protein", carbs: 0, protein: 22, fat: 2, kcal: 110, units: [{ label: "块", grams: 150 }], note: "低脂高蛋白，适合晚餐。", shortHint: "大块鱼肉" },
   { id: "shrimp", name: "虾", type: "protein", carbs: 0, protein: 20, fat: 1, kcal: 100, units: [{ label: "只", grams: 12 }], note: "低脂蛋白，适合减脂。", shortHint: "中等虾" },
   { id: "egg", name: "鸡蛋", type: "protein", carbs: 1.1, protein: 13, fat: 10, kcal: 155, units: [{ label: "个", grams: 50 }], note: "蛋白和脂肪一起提供，不适合无限加。", shortHint: "鸡蛋" },
-  { id: "egg_white", name: "蛋清", type: "protein", carbs: 0.7, protein: 11, fat: 0.2, kcal: 52, units: [{ label: "个", grams: 33 }], note: "补蛋白时很好用。", shortHint: "蛋清" },
   { id: "tofu", name: "豆腐", type: "protein", carbs: 2, protein: 8, fat: 4.8, kcal: 80, units: [{ label: "盒", grams: 400 }], note: "植物蛋白，蛋白密度低于肉类。", shortHint: "盒装豆腐" },
   { id: "milk", name: "牛奶", type: "protein", carbs: 5, protein: 3.4, fat: 3.6, kcal: 60, units: [{ label: "盒", grams: 250 }], note: "早餐或加餐常见。", shortHint: "纯牛奶" },
   { id: "yogurt", name: "酸奶", type: "protein", carbs: 6, protein: 4, fat: 3, kcal: 70, units: [{ label: "杯", grams: 200 }], note: "注意含糖酸奶。", shortHint: "无糖酸奶" },
 ];
 
-const dishGuides = [
-  { name: "黄焖鸡米饭", scene: "外卖高频", risk: "主食和酱汁容易超标。", how: ["米饭减到半份", "少喝酱汁", "补一份青菜"], fit: "减脂 / 维持" },
-  { name: "番茄炒蛋", scene: "家常菜", risk: "鸡蛋数量和炒油会决定脂肪高低。", how: ["蛋控制在 2-3 个", "配明确主食", "蛋白不够时加虾或鸡胸"], fit: "维持 / 增肌" },
-  { name: "麻辣烫 / 冒菜", scene: "自由选菜", risk: "汤底、丸子、宽粉和芝麻酱最容易失控。", how: ["先选虾、鱼片、鸡胸、豆腐", "主食只留 1 份", "丸子和芝麻酱控制"], fit: "减脂 / 维持" },
-  { name: "火锅", scene: "社交聚餐", risk: "无意识续肉、蘸料和主食叠加危险。", how: ["先下蔬菜和瘦肉", "蘸料偏清爽", "肥牛丸滑控制成点缀"], fit: "减脂 / 维持 / 增肌" },
+const dishLibrary = [
+  { id: "breakfast-oats-egg", meal: "breakfast", scene: "home", name: "燕麦 + 鸡蛋 + 牛奶", tags: ["早餐", "家里", "高蛋白"], carbFoodId: "oats", proteinFoodId: "egg", note: "很稳，适合早上不想想太多的时候。" },
+  { id: "breakfast-bread-milk", meal: "breakfast", scene: "convenience", name: "全麦面包 + 无糖酸奶", tags: ["早餐", "便利店", "快选"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "上班路上最容易落地的一种组合。" },
+  { id: "lunch-chicken-rice", meal: "lunch", scene: "takeout", name: "鸡腿饭减饭版", tags: ["午餐", "外卖", "高频"], carbFoodId: "rice", proteinFoodId: "chicken_leg", note: "优先减饭、少酱汁，比硬控不吃舒服很多。" },
+  { id: "lunch-beef-rice", meal: "lunch", scene: "takeout", name: "牛肉 + 小碗饭 + 青菜", tags: ["午餐", "外卖", "稳妥"], carbFoodId: "rice", proteinFoodId: "beef", note: "适合午餐主战场，饱腹感和蛋白都比较稳。" },
+  { id: "lunch-home-fish", meal: "lunch", scene: "home", name: "鱼肉 + 米饭 + 蔬菜", tags: ["午餐", "家里", "清爽"], carbFoodId: "rice", proteinFoodId: "fish", note: "适合想吃正餐但不想太油的情况。" },
+  { id: "dinner-fish-potato", meal: "dinner", scene: "home", name: "鱼肉 + 红薯 + 蔬菜", tags: ["晚餐", "家里", "轻晚餐"], carbFoodId: "sweet_potato", proteinFoodId: "fish", note: "晚餐想稳一点，这个组合很适合。" },
+  { id: "dinner-shrimp-corn", meal: "dinner", scene: "takeout", name: "虾 + 玉米 + 蔬菜", tags: ["晚餐", "外卖", "轻量"], carbFoodId: "corn", proteinFoodId: "shrimp", note: "适合白天吃多了，晚上想收一收。" },
+  { id: "snack-yogurt", meal: "snack", scene: "convenience", name: "无糖酸奶 + 牛奶", tags: ["加餐", "便利店", "补蛋白"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "更适合临时垫一下，不容易失控。" },
 ];
 
 const correctionRules = [
-  { title: "午饭超了怎么办", desc: "晚饭先减主食，不要再减蛋白。重点修碳水和油脂。" },
-  { title: "晚上想吃宵夜怎么办", desc: "优先用酸奶、蛋白奶、蛋清、虾这类高饱腹低负担组合。" },
-  { title: "今天蛋白不够怎么补", desc: "鸡胸 / 虾 / 鱼 / 蛋清 / 无糖酸奶，优先补这些。" },
+  { title: "午饭主食吃多了", desc: "晚饭先减主食，不要再减蛋白，重点修碳水和油脂。" },
+  { title: "炸物吃多了", desc: "后面一餐优先选鱼、虾、鸡胸，避免再叠加高油食物。" },
+  { title: "今天蛋白不够", desc: "优先补鸡胸、虾、鱼、蛋、无糖酸奶，不要拿零食冒充补营养。" },
+  { title: "晚上想吃宵夜", desc: "优先选酸奶、牛奶、蛋白类小组合，不再补第二份主食。" },
 ];
 
 const presetPlans = {
@@ -117,7 +117,6 @@ function formatLifestyleUnit(food, grams) {
   const count = grams / unit.grams;
   const roundedCount = count < 2 ? round(count, 1) : round(count, 0);
   const clean = `${roundedCount}`;
-
   if (unit.label === "掌心") return `约 ${clean}个掌心大小`;
   if (unit.label === "份") return food.shortHint ? `约 ${clean}份，${food.shortHint}` : `约 ${clean}份`;
   if (unit.label === "盒" && food.id === "tofu") return count < 1 ? `约 ${round(count * 2, 1)}半盒豆腐` : `约 ${clean}盒豆腐`;
@@ -125,18 +124,49 @@ function formatLifestyleUnit(food, grams) {
   return `约 ${clean}${unit.label}${food.shortHint ? `，${food.shortHint}` : ""}`;
 }
 
+function scoreDish(dish, preferences, historyCounts) {
+  const dishName = dish.name;
+  const foodIds = [dish.carbFoodId, dish.proteinFoodId].filter(Boolean);
+  if (preferences.dislikedDishes.includes(dishName)) return -999;
+  if (foodIds.some((id) => preferences.avoidFoods.includes(id))) return -999;
+
+  let score = 0;
+  if (preferences.favoriteDishes.includes(dishName)) score += 4;
+  if (foodIds.some((id) => preferences.favoriteFoods.includes(id))) score += 3;
+  if (preferences.preferredScenes.includes(dish.scene)) score += 2;
+  score += (historyCounts[dishName] || 0) * 0.8;
+  return score;
+}
+
+function getDishRecommendations({ mealId, scene, preferences, historyCounts }) {
+  return dishLibrary
+    .filter((dish) => dish.meal === mealId && (!scene || dish.scene === scene))
+    .map((dish) => ({ ...dish, score: scoreDish(dish, preferences, historyCounts) }))
+    .filter((dish) => dish.score > -999)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+}
+
+function buildTodayProgress(plans, chosenMealIds) {
+  const mealKeys = ["breakfast", "lunch", "dinner", "snack"];
+  const planned = mealKeys.filter((meal) => plans[meal]).length;
+  const completed = mealKeys.filter((meal) => chosenMealIds.includes(meal)).length;
+  return { planned, completed, remaining: Math.max(planned - completed, 0) };
+}
+
 function runSelfTests() {
   const rice = foods.find((food) => food.id === "rice");
   const chicken = foods.find((food) => food.id === "chicken");
-  const egg = foods.find((food) => food.id === "egg");
   const maleDefault = calculateNutrition({ sex: "male", age: 35, height: 175, weight: 85, activity: "sedentary", goal: "standard_cut" });
+  const preferences = { avoidFoods: ["beef"], favoriteFoods: ["rice"], favoriteDishes: [], dislikedDishes: [], preferredScenes: [] };
+  const recs = getDishRecommendations({ mealId: "lunch", scene: "takeout", preferences, historyCounts: {} });
   return [
     { name: "男性 BMR：85kg / 175cm / 35岁", pass: nearlyEqual(bmr({ sex: "male", weight: 85, height: 175, age: 35 }), 1773.75, 0.01) },
     { name: "60g 碳水 ≈ 214g 熟米饭", pass: nearlyEqual(gramsFor(rice, "carbs", 60), 214.29, 0.1) },
     { name: "40g 蛋白 ≈ 129g 鸡胸肉", pass: nearlyEqual(gramsFor(chicken, "protein", 40), 129.03, 0.1) },
-    { name: "鸡蛋 13g 蛋白 ≈ 100g 鸡蛋", pass: nearlyEqual(gramsFor(egg, "protein", 13), 100, 0.1) },
     { name: "默认男性目标热量不低于保护线", pass: maleDefault.kcal >= 1500 },
     { name: "标准三餐比例合计为100%", pass: Object.values(presetPlans.balanced_three.ratios).reduce((sum, value) => sum + value, 0) === 100 },
+    { name: "忌口食材不会出现在午餐推荐里", pass: recs.every((item) => item.proteinFoodId !== "beef") },
   ];
 }
 
@@ -195,23 +225,6 @@ function SectionTitle({ title, desc }) {
   );
 }
 
-function FoodCard({ food, grams, macro }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="font-semibold text-slate-900">{food.name}</div>
-          <div className="mt-1 text-xs text-slate-500">{macro === "carbs" ? "主食" : "蛋白"} · {food.note}</div>
-        </div>
-        <Badge>{macro === "carbs" ? "主食" : "蛋白"}</Badge>
-      </div>
-      <div className="mt-3 text-lg font-semibold text-slate-900">{round(grams)}g</div>
-      <div className="mt-1 text-sm text-slate-600">{formatLifestyleUnit(food, grams)}</div>
-      <div className="mt-2 text-xs text-slate-500">每100g：碳水 {food.carbs}g · 蛋白 {food.protein}g · 脂肪 {food.fat}g</div>
-    </div>
-  );
-}
-
 function Modal({ open, title, onClose, children }) {
   if (!open) return null;
   return (
@@ -227,16 +240,23 @@ function Modal({ open, title, onClose, children }) {
   );
 }
 
-function PersonalInfoPage({ form, set, nutrition, mealMode, onMealModeChange, ratios, onRatioChange, activePreset, onApplyPreset }) {
+function PersonalInfoPage({ form, set, nutrition, mealMode, onMealModeChange, ratios, onRatioChange, activePreset, onApplyPreset, preferences, setPreferences }) {
   const meals = mealProfiles[mealMode] || mealProfiles.three;
   const total = meals.reduce((sum, meal) => sum + (Number(ratios[meal.id]) || 0), 0);
   const valid = total === 100;
+
+  function toggleListItem(key, value) {
+    setPreferences((prev) => {
+      const exists = prev[key].includes(value);
+      return { ...prev, [key]: exists ? prev[key].filter((item) => item !== value) : [...prev[key], value] };
+    });
+  }
 
   return (
     <div className="space-y-5">
       <CardShell>
         <div className="p-5">
-          <SectionTitle title="个人信息" desc="把基础参数放到一个独立页面，平时不需要频繁修改。" />
+          <SectionTitle title="个人信息" desc="基础数据和目标集中设置，平时不需要频繁改。" />
           <div className="mt-4 grid grid-cols-2 gap-3">
             <div className="col-span-2"><FieldLabel>性别</FieldLabel><SelectField value={form.sex} onChange={(value) => set("sex", value)} options={[{ value: "male", label: "男性" }, { value: "female", label: "女性" }]} /></div>
             <div><FieldLabel>年龄</FieldLabel><NumberField value={form.age} onChange={(value) => set("age", value)} /></div>
@@ -250,7 +270,7 @@ function PersonalInfoPage({ form, set, nutrition, mealMode, onMealModeChange, ra
 
       <CardShell>
         <div className="p-5">
-          <SectionTitle title="每日目标" desc="这里集中展示代谢与营养目标，不再和每餐操作混在一起。" />
+          <SectionTitle title="每日目标" desc="把代谢和营养目标放在这里集中查看。" />
           <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
             <MacroPill label="基础代谢" value={round(nutrition.BMR)} suffix=" kcal" hint="静息消耗" />
             <MacroPill label="日常消耗" value={round(nutrition.TDEE)} suffix=" kcal" hint="含活动量" />
@@ -258,13 +278,12 @@ function PersonalInfoPage({ form, set, nutrition, mealMode, onMealModeChange, ra
             <MacroPill label="蛋白质" value={round(nutrition.protein)} suffix="g" hint="优先吃够" />
             <MacroPill label="碳水" value={round(nutrition.carbs)} suffix="g" hint="主食参考" />
           </div>
-          <div className="mt-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">脂肪预算约 {round(nutrition.fat)}g，用来限制油脂过量，不要求每餐精算。</div>
         </div>
       </CardShell>
 
       <CardShell>
         <div className="p-5">
-          <SectionTitle title="餐次设置" desc="先设好你的习惯分配，后面用餐时直接调用。" />
+          <SectionTitle title="餐次设置" desc="先设好分配，后面系统会按这个习惯给推荐。" />
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <div>
               <FieldLabel>餐次模式</FieldLabel>
@@ -273,7 +292,7 @@ function PersonalInfoPage({ form, set, nutrition, mealMode, onMealModeChange, ra
             <div className="rounded-2xl bg-slate-50 p-4">
               <div className="text-sm text-slate-500">当前合计</div>
               <div className={`mt-1 text-2xl font-bold ${valid ? "text-emerald-700" : "text-red-700"}`}>{total}%</div>
-              <div className="mt-1 text-xs text-slate-500">{valid ? "已生效" : "需要调到 100% 才会用于推荐"}</div>
+              <div className="mt-1 text-xs text-slate-500">{valid ? "已生效" : "需要调到 100%"}</div>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -289,40 +308,145 @@ function PersonalInfoPage({ form, set, nutrition, mealMode, onMealModeChange, ra
           </div>
         </div>
       </CardShell>
+
+      <CardShell>
+        <div className="p-5">
+          <SectionTitle title="个人偏好" desc="不是硬性任务，而是让推荐越来越像你平时会选的东西。" />
+          <div className="mt-4 grid gap-5 lg:grid-cols-3">
+            <div>
+              <div className="text-sm font-semibold text-slate-900">忌口食材</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {foods.map((food) => <button key={food.id} className={`rounded-full px-3 py-2 text-xs ${preferences.avoidFoods.includes(food.id) ? "bg-red-100 text-red-800" : "bg-slate-100 text-slate-700"}`} onClick={() => toggleListItem("avoidFoods", food.id)}>{food.name}</button>)}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-slate-900">喜欢的食材</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {foods.map((food) => <button key={food.id} className={`rounded-full px-3 py-2 text-xs ${preferences.favoriteFoods.includes(food.id) ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}`} onClick={() => toggleListItem("favoriteFoods", food.id)}>{food.name}</button>)}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-slate-900">偏好场景</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[{ value: "home", label: "家里" }, { value: "takeout", label: "外卖" }, { value: "convenience", label: "便利店" }].map((scene) => <button key={scene.value} className={`rounded-full px-3 py-2 text-xs ${preferences.preferredScenes.includes(scene.value) ? "bg-blue-100 text-blue-800" : "bg-slate-100 text-slate-700"}`} onClick={() => toggleListItem("preferredScenes", scene.value)}>{scene.label}</button>)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardShell>
     </div>
   );
 }
 
-function AdminDataPage() {
+function PlanningPage({ mealMode, preferences, historyCounts, tomorrowPlan, setTomorrowPlan, weekPlan, setWeekPlan }) {
+  const meals = mealProfiles[mealMode] || mealProfiles.three;
+  const scenes = [{ id: "home", name: "家里" }, { id: "takeout", name: "外卖" }, { id: "convenience", name: "便利店" }];
+
+  function setMealPlan(dayKey, mealId, updates) {
+    const updater = dayKey === "tomorrow" ? setTomorrowPlan : setWeekPlan;
+    updater((prev) => ({ ...prev, [mealId]: { ...(prev[mealId] || {}), ...updates } }));
+  }
+
+  function renderPlanEditor(dayKey, title, desc) {
+    const source = dayKey === "tomorrow" ? tomorrowPlan : weekPlan;
+    return (
+      <CardShell>
+        <div className="p-5">
+          <SectionTitle title={title} desc={desc} />
+          <div className="mt-4 space-y-4">
+            {meals.map((meal) => {
+              const current = source[meal.id] || { scene: "takeout", dishId: "" };
+              const recommendations = getDishRecommendations({ mealId: meal.id, scene: current.scene, preferences, historyCounts });
+              return (
+                <div key={meal.id} className="rounded-2xl border border-slate-200 p-4">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <div className="font-semibold text-slate-900">{meal.name}</div>
+                      <div className="mt-1 text-sm text-slate-500">先选场景，再点一个你更想吃的组合。</div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {scenes.map((scene) => <button key={scene.id} className={`rounded-full px-3 py-2 text-xs ${current.scene === scene.id ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"}`} onClick={() => setMealPlan(dayKey, meal.id, { scene: scene.id, dishId: "" })}>{scene.name}</button>)}
+                    </div>
+                  </div>
+                  <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    {recommendations.map((dish) => (
+                      <button key={dish.id} className={`rounded-2xl border p-4 text-left ${current.dishId === dish.id ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-slate-50 text-slate-900"}`} onClick={() => setMealPlan(dayKey, meal.id, { dishId: dish.id })}>
+                        <div className="font-semibold">{dish.name}</div>
+                        <div className={`mt-2 text-xs ${current.dishId === dish.id ? "text-slate-300" : "text-slate-500"}`}>{dish.note}</div>
+                        <div className="mt-3 flex flex-wrap gap-1">{dish.tags.map((tag) => <span key={tag} className={`rounded-full px-2 py-1 text-[11px] ${current.dishId === dish.id ? "bg-white/10 text-white" : "bg-white text-slate-600"}`}>{tag}</span>)}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </CardShell>
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+      {renderPlanEditor("tomorrow", "明天吃什么", "提前把明天想好，第二天饭点时系统就能按你的计划提醒。")}
+      {renderPlanEditor("week", "一周轻规划", "先做轻量草案，不要求每餐都定死，适合大方向先想好的人。")}
+    </div>
+  );
+}
+
+function TodayPage({ nutrition, mealMode, tomorrowPlan, chosenMealIds }) {
+  const meals = mealProfiles[mealMode] || mealProfiles.three;
+  const progress = buildTodayProgress(tomorrowPlan, chosenMealIds);
   return (
     <div className="space-y-5">
       <CardShell>
         <div className="p-5">
-          <SectionTitle title="后台数据" desc="把食材和策略视作后台内容，主流程不直接铺开给用户。" />
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <div className="font-semibold text-slate-900">食材库</div>
-              <div className="mt-2 text-sm text-slate-600">当前共 {foods.length} 条示例食材，前端先以内置数据方式运行，后面可以切到后台管理。</div>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <div className="font-semibold text-slate-900">菜肴策略</div>
-              <div className="mt-2 text-sm text-slate-600">当前共 {dishGuides.length} 条常见吃法建议，可继续扩成可维护的策略模板。</div>
-            </div>
+          <SectionTitle title="今天的提醒" desc="如果你昨天已经配好了，今天到饭点就不需要重新想一遍。" />
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <MacroPill label="已规划餐次" value={progress.planned} hint="今天共安排了几餐" />
+            <MacroPill label="已完成餐次" value={progress.completed} hint="你已经勾过的餐次" />
+            <MacroPill label="还剩" value={progress.remaining} hint="还可以继续照计划吃" />
           </div>
         </div>
       </CardShell>
 
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {meals.map((meal) => {
+          const plan = tomorrowPlan[meal.id];
+          const dish = dishLibrary.find((item) => item.id === plan?.dishId);
+          return (
+            <CardShell key={meal.id}>
+              <div className="p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="font-semibold text-slate-900">{meal.name}</div>
+                    <div className="mt-1 text-sm text-slate-500">{dish ? "昨天已经帮你想好了" : "还没有提前安排"}</div>
+                  </div>
+                  <Badge tone={dish ? "green" : "slate"}>{dish ? "已规划" : "未规划"}</Badge>
+                </div>
+                {dish ? (
+                  <div className="mt-4 rounded-2xl bg-slate-50 p-4">
+                    <div className="font-semibold text-slate-900">{dish.name}</div>
+                    <div className="mt-2 text-sm text-slate-600">{dish.note}</div>
+                    <div className="mt-3 flex flex-wrap gap-2">{dish.tags.map((tag) => <span key={tag} className="rounded-full bg-white px-2 py-1 text-xs text-slate-600">{tag}</span>)}</div>
+                  </div>
+                ) : (
+                  <div className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">你还没给这餐做安排，临时吃也没关系，饭点时再选就行。</div>
+                )}
+              </div>
+            </CardShell>
+          );
+        })}
+      </div>
+
       <CardShell>
         <div className="p-5">
-          <div className="text-sm font-medium text-slate-500">示例食材</div>
-          <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {foods.map((food) => (
-              <div key={food.id} className="rounded-2xl border border-slate-200 bg-white p-4">
-                <div className="font-semibold text-slate-900">{food.name}</div>
-                <div className="mt-1 text-sm text-slate-500">{food.type === "carb" ? "主食" : "蛋白"} · {food.shortHint}</div>
-                <div className="mt-2 text-xs text-slate-500">每100g：碳水 {food.carbs}g · 蛋白 {food.protein}g · 脂肪 {food.fat}g</div>
-              </div>
-            ))}
+          <SectionTitle title="今日目标摘要" desc="不压迫，只给你当下需要的基准。" />
+          <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <MacroPill label="目标热量" value={round(nutrition.kcal)} suffix=" kcal" />
+            <MacroPill label="蛋白质" value={round(nutrition.protein)} suffix="g" />
+            <MacroPill label="碳水" value={round(nutrition.carbs)} suffix="g" />
+            <MacroPill label="脂肪预算" value={round(nutrition.fat)} suffix="g" />
           </div>
         </div>
       </CardShell>
@@ -330,37 +454,35 @@ function AdminDataPage() {
   );
 }
 
-function MealFlowModal({ open, onClose, mealMode, ratios, nutrition }) {
+function MealFlowModal({ open, onClose, mealMode, ratios, nutrition, preferences, historyCounts, onCompleteMeal }) {
   const meals = mealProfiles[mealMode] || mealProfiles.three;
   const [selectedMeal, setSelectedMeal] = useState(meals[0]?.id || "breakfast");
+  const [selectedScene, setSelectedScene] = useState("takeout");
   const activeMeal = meals.find((meal) => meal.id === selectedMeal) || meals[0];
   const ratioPercent = Number(ratios[selectedMeal]) || 0;
   const ratio = ratioPercent / 100;
-  const targets = {
-    carbs: nutrition.carbs * ratio,
-    protein: nutrition.protein * ratio,
-    fat: nutrition.fat * ratio,
-    kcal: nutrition.kcal * ratio,
-  };
-  const carbFoods = foods.filter((food) => food.type === "carb").slice(0, 6);
-  const proteinFoods = foods.filter((food) => food.type === "protein").slice(0, 6);
+  const targets = { carbs: nutrition.carbs * ratio, protein: nutrition.protein * ratio, fat: nutrition.fat * ratio, kcal: nutrition.kcal * ratio };
+  const recommendations = getDishRecommendations({ mealId: selectedMeal, scene: selectedScene, preferences, historyCounts });
 
   return (
     <Modal open={open} title="开始一餐" onClose={onClose}>
       <div className="space-y-5">
-        <SectionTitle title="先选你现在要吃哪一餐" desc="只有在真正要吃的时候，才进入操作流程。" />
+        <SectionTitle title="需要的时候再帮你一把" desc="不是任务式打卡，只有你现在要吃的时候，才进入这一步。" />
         <div className="flex flex-wrap gap-2">
           {meals.map((meal) => <MiniButton key={meal.id} active={selectedMeal === meal.id} onClick={() => setSelectedMeal(meal.id)}>{meal.name}</MiniButton>)}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {[{ id: "home", name: "家里" }, { id: "takeout", name: "外卖" }, { id: "convenience", name: "便利店" }].map((scene) => <MiniButton key={scene.id} active={selectedScene === scene.id} onClick={() => setSelectedScene(scene.id)}>{scene.name}</MiniButton>)}
         </div>
 
         <CardShell>
           <div className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-lg font-semibold text-slate-900">{activeMeal?.name} 推荐</div>
-                <div className="mt-1 text-sm text-slate-500">按你预设的 {ratioPercent}% 比例自动生成</div>
+                <div className="text-lg font-semibold text-slate-900">{activeMeal?.name} 建议</div>
+                <div className="mt-1 text-sm text-slate-500">按你预设的 {ratioPercent}% 比例和偏好生成</div>
               </div>
-              <Badge tone="green">已个性化</Badge>
+              <Badge tone="green">个性化</Badge>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
               <MacroPill label="热量" value={round(targets.kcal)} suffix=" kcal" />
@@ -371,76 +493,40 @@ function MealFlowModal({ open, onClose, mealMode, ratios, nutrition }) {
           </div>
         </CardShell>
 
-        <div className="grid gap-5 lg:grid-cols-2">
-          <CardShell>
-            <div className="p-5">
-              <div className="text-lg font-semibold text-slate-900">主食推荐</div>
-              <div className="mt-3 space-y-3">
-                {carbFoods.map((food) => {
-                  const grams = gramsFor(food, "carbs", targets.carbs);
-                  return <FoodCard key={food.id} food={food} grams={grams} macro="carbs" />;
-                })}
-              </div>
-            </div>
-          </CardShell>
-
-          <CardShell>
-            <div className="p-5">
-              <div className="text-lg font-semibold text-slate-900">蛋白推荐</div>
-              <div className="mt-3 space-y-3">
-                {proteinFoods.map((food) => {
-                  const grams = gramsFor(food, "protein", targets.protein);
-                  return <FoodCard key={food.id} food={food} grams={grams} macro="protein" />;
-                })}
-              </div>
-            </div>
-          </CardShell>
+        <div className="grid gap-3 md:grid-cols-3">
+          {recommendations.map((dish) => {
+            const carbFood = foods.find((food) => food.id === dish.carbFoodId);
+            const proteinFood = foods.find((food) => food.id === dish.proteinFoodId);
+            const carbGrams = gramsFor(carbFood, "carbs", targets.carbs);
+            const proteinGrams = gramsFor(proteinFood, "protein", targets.protein);
+            return (
+              <CardShell key={dish.id}>
+                <div className="p-5">
+                  <div className="font-semibold text-slate-900">{dish.name}</div>
+                  <div className="mt-2 text-sm text-slate-600">{dish.note}</div>
+                  <div className="mt-3 space-y-2 text-sm text-slate-700">
+                    <div>{carbFood?.name}：{round(carbGrams)}g，{formatLifestyleUnit(carbFood, carbGrams)}</div>
+                    <div>{proteinFood?.name}：{round(proteinGrams)}g，{formatLifestyleUnit(proteinFood, proteinGrams)}</div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">{dish.tags.map((tag) => <span key={tag} className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{tag}</span>)}</div>
+                  <button className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white" onClick={() => onCompleteMeal(selectedMeal, dish.name)}>这餐我就按这个吃</button>
+                </div>
+              </CardShell>
+            );
+          })}
         </div>
-
-        <CardShell>
-          <div className="p-5">
-            <div className="text-lg font-semibold text-slate-900">这一餐的执行提示</div>
-            <div className="mt-3 grid gap-3 md:grid-cols-2">
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">先定蛋白，再选主食，最后补蔬菜。这样最不容易吃乱。</div>
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">如果这餐是外卖，优先压酱汁和额外油脂，不要同时放开主食和甜饮。</div>
-            </div>
-          </div>
-        </CardShell>
       </div>
     </Modal>
   );
 }
 
-function StrategyPage() {
+function FixPage() {
   return (
     <div className="space-y-5">
       <CardShell>
         <div className="p-5">
-          <SectionTitle title="日常吃法策略" desc="平时不需要一直打开，作为随时查阅的策略页存在。" />
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {dishGuides.map((item) => (
-              <div key={item.name} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="font-semibold text-slate-900">{item.name}</div>
-                    <div className="mt-1 text-xs text-slate-500">{item.scene} · 适合 {item.fit}</div>
-                  </div>
-                  <Badge tone="amber">避坑</Badge>
-                </div>
-                <div className="mt-3 text-sm text-slate-600">{item.risk}</div>
-                <ul className="mt-3 space-y-1 text-sm text-slate-700">
-                  {item.how.map((line) => <li key={line}>• {line}</li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </CardShell>
-
-      <CardShell>
-        <div className="p-5">
-          <div className="text-lg font-semibold text-slate-900">纠偏建议</div>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <SectionTitle title="超了怎么修" desc="把纠偏也做成主入口，不让用户翻一堆资料。" />
+          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {correctionRules.map((item) => (
               <div key={item.title} className="rounded-2xl bg-slate-50 p-4">
                 <div className="font-semibold text-slate-900">{item.title}</div>
@@ -461,7 +547,7 @@ function TestPage() {
     <CardShell>
       <div className="p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <SectionTitle title="逻辑自检" desc="保留最小验证页，方便继续开发时快速检查。" />
+          <SectionTitle title="逻辑自检" desc="保留最小验证页，避免改着改着把推荐逻辑改坏。" />
           <Badge tone={passed === tests.length ? "green" : "red"}>{passed}/{tests.length} 通过</Badge>
         </div>
         <div className="space-y-2">
@@ -479,14 +565,20 @@ function TestPage() {
 
 export default function NutritionWebToolMVP() {
   const defaultPreset = presetPlans.balanced_three;
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState("today");
   const [mealFlowOpen, setMealFlowOpen] = useState(false);
   const [form, setForm] = useState({ sex: "male", age: 35, height: 175, weight: 85, activity: "sedentary", goal: "standard_cut" });
   const [mealMode, setMealMode] = useState(defaultPreset.mealMode);
   const [ratios, setRatios] = useState(defaultPreset.ratios);
   const [activePreset, setActivePreset] = useState("balanced_three");
+  const [preferences, setPreferences] = useState({ avoidFoods: [], favoriteFoods: ["rice", "chicken"], favoriteDishes: ["鸡腿饭减饭版"], dislikedDishes: [], preferredScenes: ["takeout"] });
+  const [choiceHistory, setChoiceHistory] = useState(["鸡腿饭减饭版", "燕麦 + 鸡蛋 + 牛奶"]);
+  const [chosenMealIds, setChosenMealIds] = useState([]);
+  const [tomorrowPlan, setTomorrowPlan] = useState({});
+  const [weekPlan, setWeekPlan] = useState({});
 
   const nutrition = useMemo(() => calculateNutrition(form), [form]);
+  const historyCounts = useMemo(() => choiceHistory.reduce((acc, item) => ({ ...acc, [item]: (acc[item] || 0) + 1 }), {}), [choiceHistory]);
   const ratioTotal = (mealProfiles[mealMode] || []).reduce((sum, meal) => sum + (Number(ratios[meal.id]) || 0), 0);
   const ratioValid = ratioTotal === 100;
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
@@ -512,6 +604,13 @@ export default function NutritionWebToolMVP() {
     setActivePreset(null);
   }
 
+  function handleCompleteMeal(mealId, dishName) {
+    setChosenMealIds((prev) => Array.from(new Set([...prev, mealId])));
+    setChoiceHistory((prev) => [...prev, dishName]);
+    setMealFlowOpen(false);
+    setPage("today");
+  }
+
   return (
     <div className="min-h-screen bg-slate-100 px-3 py-4 text-slate-900 sm:px-4 md:px-8 md:py-8">
       <div className="mx-auto max-w-7xl space-y-5">
@@ -519,13 +618,13 @@ export default function NutritionWebToolMVP() {
           <div className="p-5 sm:p-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <Badge tone="blue">饭饭 · 更像 APP 的饮食控制原型</Badge>
-                <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">把长页面拆掉，改成更像真实使用流程</h1>
-                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">基础资料放在个人信息页，食材和策略收进后台/策略页。真正要吃饭时，再打开“开始一餐”弹窗，用更短路径完成推荐和选择。</p>
+                <Badge tone="blue">饭饭 · 下一版方向</Badge>
+                <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">需要时帮得上忙，也能提前替你想好明天吃什么</h1>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">这一版重点不再是逼用户执行，而是增加提前规划、饭点提醒思路、个人偏好和更生活化的菜肴推荐逻辑。</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button className="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm" onClick={() => setMealFlowOpen(true)}>开始一餐</button>
-                <button className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white" onClick={() => setPage("personal")}>去个人信息</button>
+                <button className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white" onClick={() => setPage("planning")}>安排明天</button>
               </div>
             </div>
           </div>
@@ -533,56 +632,28 @@ export default function NutritionWebToolMVP() {
 
         <div className="rounded-3xl bg-white p-2 shadow-sm">
           <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
-            <MiniButton active={page === "home"} onClick={() => setPage("home")}>首页</MiniButton>
-            <MiniButton active={page === "personal"} onClick={() => setPage("personal")}>个人信息</MiniButton>
-            <MiniButton active={page === "strategy"} onClick={() => setPage("strategy")}>策略页</MiniButton>
-            <MiniButton active={page === "admin"} onClick={() => setPage("admin")}>后台数据</MiniButton>
+            <MiniButton active={page === "today"} onClick={() => setPage("today")}>今天</MiniButton>
+            <MiniButton active={page === "planning"} onClick={() => setPage("planning")}>提前规划</MiniButton>
+            <MiniButton active={page === "fix"} onClick={() => setPage("fix")}>纠偏</MiniButton>
+            <MiniButton active={page === "personal"} onClick={() => setPage("personal")}>个人设置</MiniButton>
             <MiniButton active={page === "tests"} onClick={() => setPage("tests")}>自检</MiniButton>
           </div>
         </div>
 
-        {page === "home" && (
-          <div className="grid gap-5 lg:grid-cols-3">
-            <CardShell className="lg:col-span-2">
-              <div className="p-5">
-                <SectionTitle title="现在的主流程" desc="不再把全部信息平铺在一个长页面，而是按真实动作拆开。" />
-                <div className="mt-5 grid gap-4 md:grid-cols-3">
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <div className="text-sm font-semibold text-slate-900">1. 先设个人信息</div>
-                    <div className="mt-2 text-sm text-slate-600">身高、体重、目标、活动量集中设置一次即可。</div>
-                  </div>
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <div className="text-sm font-semibold text-slate-900">2. 平时不进长页</div>
-                    <div className="mt-2 text-sm text-slate-600">食材库和策略放在独立页面，不干扰主要操作。</div>
-                  </div>
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <div className="text-sm font-semibold text-slate-900">3. 吃饭时再打开</div>
-                    <div className="mt-2 text-sm text-slate-600">进入弹窗，选择早餐/午餐/晚餐，直接看推荐。</div>
-                  </div>
-                </div>
-              </div>
-            </CardShell>
+        {!ratioValid && page !== "tests" ? (
+          <CardShell>
+            <div className="p-5 text-sm text-red-700">当前餐次比例还没调到 100%，推荐会受影响，建议先去“个人设置”完成配置。</div>
+          </CardShell>
+        ) : null}
 
-            <CardShell>
-              <div className="p-5">
-                <SectionTitle title="当前状态" desc="首页只保留关键摘要。" />
-                <div className="mt-4 space-y-3">
-                  <div className="rounded-2xl bg-slate-50 p-4"><div className="text-sm text-slate-500">当前目标</div><div className="mt-1 font-semibold text-slate-900">{goalMap[form.goal].label}</div></div>
-                  <div className="rounded-2xl bg-slate-50 p-4"><div className="text-sm text-slate-500">目标热量</div><div className="mt-1 font-semibold text-slate-900">{round(nutrition.kcal)} kcal</div></div>
-                  <div className="rounded-2xl bg-slate-50 p-4"><div className="text-sm text-slate-500">餐次比例</div><div className="mt-1 font-semibold text-slate-900">{ratioValid ? "已配置" : "未完成"}</div></div>
-                </div>
-              </div>
-            </CardShell>
-          </div>
-        )}
-
-        {page === "personal" && <PersonalInfoPage form={form} set={set} nutrition={nutrition} mealMode={mealMode} onMealModeChange={handleMealModeChange} ratios={ratios} onRatioChange={handleRatioChange} activePreset={activePreset} onApplyPreset={applyPreset} />}
-        {page === "strategy" && <StrategyPage />}
-        {page === "admin" && <AdminDataPage />}
+        {page === "today" && <TodayPage nutrition={nutrition} mealMode={mealMode} tomorrowPlan={tomorrowPlan} chosenMealIds={chosenMealIds} />}
+        {page === "planning" && <PlanningPage mealMode={mealMode} preferences={preferences} historyCounts={historyCounts} tomorrowPlan={tomorrowPlan} setTomorrowPlan={setTomorrowPlan} weekPlan={weekPlan} setWeekPlan={setWeekPlan} />}
+        {page === "fix" && <FixPage />}
+        {page === "personal" && <PersonalInfoPage form={form} set={set} nutrition={nutrition} mealMode={mealMode} onMealModeChange={handleMealModeChange} ratios={ratios} onRatioChange={handleRatioChange} activePreset={activePreset} onApplyPreset={applyPreset} preferences={preferences} setPreferences={setPreferences} />}
         {page === "tests" && <TestPage />}
       </div>
 
-      <MealFlowModal open={mealFlowOpen} onClose={() => setMealFlowOpen(false)} mealMode={mealMode} ratios={ratios} nutrition={nutrition} />
+      <MealFlowModal open={mealFlowOpen} onClose={() => setMealFlowOpen(false)} mealMode={mealMode} ratios={ratios} nutrition={nutrition} preferences={preferences} historyCounts={historyCounts} onCompleteMeal={handleCompleteMeal} />
     </div>
   );
 }
