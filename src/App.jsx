@@ -3,31 +3,32 @@ import React, { useEffect, useMemo, useState } from "react";
 const STORAGE_KEY = "fanfan_guest_profile_v1";
 
 const foods = [
-  { id: "rice", name: "熟米饭", type: "carb", carbs: 28, protein: 2.6, fat: 0.3, kcal: 130, units: [{ label: "碗", grams: 110 }], note: "适合日常主食，外卖常见。", shortHint: "小碗米饭" },
-  { id: "noodle", name: "面条", type: "carb", carbs: 25, protein: 4, fat: 1, kcal: 138, units: [{ label: "碗", grams: 220 }], note: "一碗面通常主食量偏高。", shortHint: "面量偏高" },
-  { id: "mantou", name: "馒头", type: "carb", carbs: 47, protein: 7, fat: 1, kcal: 223, units: [{ label: "个", grams: 100 }], note: "同等碳水下，比米饭实际克重少。", shortHint: "中等馒头" },
-  { id: "bread", name: "全麦面包", type: "carb", carbs: 43, protein: 10, fat: 4, kcal: 250, units: [{ label: "片", grams: 35 }], note: "优先选配料简单的。", shortHint: "全麦切片" },
-  { id: "oats", name: "燕麦", type: "carb", carbs: 60, protein: 13, fat: 7, kcal: 380, units: [{ label: "份", grams: 50 }], note: "适合早餐，饱腹感较好。", shortHint: "4-5勺干燕麦" },
-  { id: "sweet_potato", name: "红薯", type: "carb", carbs: 20, protein: 1.6, fat: 0.1, kcal: 90, units: [{ label: "个", grams: 220 }], note: "饱腹感强，适合减脂。", shortHint: "中等红薯" },
-  { id: "corn", name: "玉米", type: "carb", carbs: 21, protein: 3.4, fat: 1.2, kcal: 96, units: [{ label: "根", grams: 200 }], note: "可替代部分主食。", shortHint: "整根玉米" },
-  { id: "porridge", name: "白粥", type: "carb", carbs: 10, protein: 1.1, fat: 0.1, kcal: 45, units: [{ label: "碗", grams: 250 }], note: "水分高，同等碳水需要更大克重。", shortHint: "一碗白粥" },
-  { id: "dumpling", name: "饺子", type: "carb", carbs: 28, protein: 8, fat: 8, kcal: 220, units: [{ label: "个", grams: 25 }], note: "主食和肉馅混合，份量容易超。", shortHint: "家常饺子" },
-  { id: "baozi", name: "包子", type: "carb", carbs: 30, protein: 6, fat: 5, kcal: 200, units: [{ label: "个", grams: 120 }], note: "早餐常见，注意肉馅和面皮叠加。", shortHint: "常规肉包" },
-  { id: "rice_noodle", name: "米粉", type: "carb", carbs: 26, protein: 3, fat: 0.5, kcal: 120, units: [{ label: "碗", grams: 200 }], note: "汤粉类容易低估主食量。", shortHint: "汤粉" },
+  { id: "rice", name: "熟米饭", type: "carb", per: "100g", carbs: 28, protein: 2.6, fat: 0.3, kcal: 130, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "low", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "碗", grams: 110 }], note: "适合日常主食，外卖常见。", shortHint: "小碗米饭" },
+  { id: "noodle", name: "面条", type: "carb", per: "100g", carbs: 25, protein: 4, fat: 1, kcal: 138, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "low", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "碗", grams: 220 }], note: "一碗面通常主食量偏高。", shortHint: "面量偏高" },
+  { id: "mantou", name: "馒头", type: "carb", per: "100g", carbs: 47, protein: 7, fat: 1, kcal: 223, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "low", density: "high", digestibility: "fast" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "个", grams: 100 }], note: "同等碳水下，比米饭实际克重少。", shortHint: "中等馒头" },
+  { id: "bread", name: "全麦面包", type: "carb", per: "100g", carbs: 43, protein: 10, fat: 4, kcal: 250, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "medium", density: "high", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "片", grams: 35 }], note: "优先选配料简单的。", shortHint: "全麦切片" },
+  { id: "oats", name: "燕麦", type: "carb", per: "100g", carbs: 60, protein: 13, fat: 7, kcal: 380, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "high", density: "high", digestibility: "slow" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "份", grams: 50 }], note: "适合早餐，饱腹感较好。", shortHint: "4-5勺干燕麦" },
+  { id: "sweet_potato", name: "红薯", type: "carb", per: "100g", carbs: 20, protein: 1.6, fat: 0.1, kcal: 90, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "fiber", fiber: "medium", density: "medium", digestibility: "slow" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "个", grams: 220 }], note: "饱腹感强，适合减脂。", shortHint: "中等红薯" },
+  { id: "corn", name: "玉米", type: "carb", per: "100g", carbs: 21, protein: 3.4, fat: 1.2, kcal: 96, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "fiber", fiber: "medium", density: "medium", digestibility: "slow" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "根", grams: 200 }], note: "可替代部分主食。", shortHint: "整根玉米" },
+  { id: "porridge", name: "白粥", type: "carb", per: "100ml", carbs: 10, protein: 1.1, fat: 0.1, kcal: 45, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "water", fiber: "low", density: "low", digestibility: "fast" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "碗", grams: 250 }], note: "水分高，同等碳水需要更大克重。", shortHint: "一碗白粥" },
+  { id: "dumpling", name: "饺子", type: "carb", per: "100g", carbs: 28, protein: 8, fat: 8, kcal: 220, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "low", density: "high", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "个", grams: 25 }], note: "主食和肉馅混合，份量容易超。", shortHint: "家常饺子" },
+  { id: "baozi", name: "包子", type: "carb", per: "100g", carbs: 30, protein: 6, fat: 5, kcal: 200, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "low", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "个", grams: 120 }], note: "早餐常见，注意肉馅和面皮叠加。", shortHint: "常规肉包" },
+  { id: "rice_noodle", name: "米粉", type: "carb", per: "100g", carbs: 26, protein: 3, fat: 0.5, kcal: 120, nutritionProfile: { primaryMacro: "carbs", secondaryMacro: "protein", fiber: "low", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "碗", grams: 200 }], note: "汤粉类容易低估主食量。", shortHint: "汤粉" },
 
-  { id: "chicken", name: "鸡胸肉", type: "protein", carbs: 0, protein: 31, fat: 3.6, kcal: 165, units: [{ label: "掌心", grams: 120 }], note: "高蛋白低脂，最稳的减脂肉类。", shortHint: "掌心厚度" },
-  { id: "chicken_leg", name: "鸡腿肉", type: "protein", carbs: 0, protein: 24, fat: 10, kcal: 190, units: [{ label: "只", grams: 130 }], note: "比鸡胸脂肪高，去皮更合适。", shortHint: "去骨鸡腿" },
-  { id: "beef", name: "牛肉", type: "protein", carbs: 0, protein: 26, fat: 15, kcal: 250, units: [{ label: "掌心", grams: 100 }], note: "蛋白质高，脂肪视部位差异较大。", shortHint: "掌心牛肉" },
-  { id: "fish", name: "鱼肉", type: "protein", carbs: 0, protein: 22, fat: 2, kcal: 110, units: [{ label: "块", grams: 150 }], note: "低脂高蛋白，适合晚餐。", shortHint: "大块鱼肉" },
-  { id: "shrimp", name: "虾", type: "protein", carbs: 0, protein: 20, fat: 1, kcal: 100, units: [{ label: "只", grams: 12 }], note: "低脂蛋白，适合减脂。", shortHint: "中等虾" },
-  { id: "egg_boiled", name: "水煮蛋", type: "protein", carbs: 1.1, protein: 13, fat: 10, kcal: 155, units: [{ label: "个", grams: 50 }], note: "常见早餐蛋类，1个普通鸡蛋可食部分约50克。", shortHint: "普通鸡蛋" },
-  { id: "egg_steamed", name: "鸡蛋羹", type: "protein", carbs: 1.3, protein: 9, fat: 6, kcal: 100, units: [{ label: "碗", grams: 120 }], note: "更软更顺口，适合早餐或晚餐。", shortHint: "一小碗蛋羹" },
-  { id: "egg_fried", name: "煎蛋", type: "protein", carbs: 1.1, protein: 12, fat: 12, kcal: 180, units: [{ label: "个", grams: 55 }], note: "油会更高一些，适合偶尔搭配。", shortHint: "单面或双面煎蛋" },
-  { id: "egg_tomato", name: "西红柿炒鸡蛋", type: "protein", carbs: 4, protein: 8, fat: 8, kcal: 120, units: [{ label: "份", grams: 180 }], note: "是菜，不是纯蛋白，适合搭主食吃。", shortHint: "一盘家常菜" },
-  { id: "tofu", name: "豆腐", type: "protein", carbs: 2, protein: 8, fat: 4.8, kcal: 80, units: [{ label: "盒", grams: 400 }], note: "植物蛋白，蛋白密度低于肉类。", shortHint: "盒装豆腐" },
-  { id: "milk", name: "牛奶", type: "protein", carbs: 5, protein: 3.4, fat: 3.6, kcal: 60, units: [{ label: "盒", grams: 250 }], note: "早餐或加餐常见。", shortHint: "纯牛奶" },
-  { id: "yogurt", name: "酸奶", type: "protein", carbs: 6, protein: 4, fat: 3, kcal: 70, units: [{ label: "杯", grams: 200 }], note: "注意含糖酸奶。", shortHint: "无糖酸奶" },
-  { id: "pork", name: "瘦猪肉", type: "protein", carbs: 0, protein: 27, fat: 10, kcal: 200, units: [{ label: "掌心", grams: 100 }], note: "里脊和瘦肉更合适。", shortHint: "掌心瘦肉" },
+  { id: "chicken", name: "鸡胸肉", type: "protein", per: "100g", carbs: 0, protein: 31, fat: 3.6, kcal: 165, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "high", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "掌心", grams: 120 }], note: "高蛋白低脂，最稳的减脂肉类。", shortHint: "掌心厚度" },
+  { id: "chicken_leg", name: "鸡腿肉", type: "protein", per: "100g", carbs: 0, protein: 24, fat: 10, kcal: 190, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "high", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "只", grams: 130 }], note: "比鸡胸脂肪高，去皮更合适。", shortHint: "去骨鸡腿" },
+  { id: "beef", name: "牛肉", type: "protein", per: "100g", carbs: 0, protein: 26, fat: 15, kcal: 250, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "high", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "掌心", grams: 100 }], note: "蛋白质高，脂肪视部位差异较大。", shortHint: "掌心牛肉" },
+  { id: "fish", name: "鱼肉", type: "protein", per: "100g", carbs: 0, protein: 22, fat: 2, kcal: 110, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "块", grams: 150 }], note: "低脂高蛋白，适合晚餐。", shortHint: "大块鱼肉" },
+  { id: "shrimp", name: "虾", type: "protein", per: "100g", carbs: 0, protein: 20, fat: 1, kcal: 100, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "只", grams: 12 }], note: "低脂蛋白，适合减脂。", shortHint: "中等虾" },
+  { id: "egg_boiled", name: "水煮蛋", type: "protein", per: "100g", carbs: 1.1, protein: 13, fat: 10, kcal: 155, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "个", grams: 50 }], note: "常见早餐蛋类，1个普通鸡蛋可食部分约50克。", shortHint: "普通鸡蛋" },
+  { id: "egg_steamed", name: "鸡蛋羹", type: "protein", per: "100g", carbs: 1.3, protein: 9, fat: 6, kcal: 100, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "low", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "碗", grams: 120 }], note: "更软更顺口，适合早餐或晚餐。", shortHint: "一小碗蛋羹" },
+  { id: "egg_fried", name: "煎蛋", type: "protein", per: "100g", carbs: 1.1, protein: 12, fat: 12, kcal: 180, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "个", grams: 55 }], note: "油会更高一些，适合偶尔搭配。", shortHint: "单面或双面煎蛋" },
+  { id: "egg_tomato", name: "西红柿炒鸡蛋", type: "protein", per: "100g", carbs: 4, protein: 8, fat: 8, kcal: 120, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "low", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "份", grams: 180 }], note: "是菜，不是纯蛋白，适合搭主食吃。", shortHint: "一盘家常菜" },
+  { id: "tofu", name: "豆腐", type: "protein", per: "100g", carbs: 2, protein: 8, fat: 4.8, kcal: 80, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "low", density: "medium", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "盒", grams: 400 }], note: "植物蛋白，蛋白密度低于肉类。", shortHint: "盒装豆腐" },
+  { id: "milk", name: "牛奶", type: "protein", per: "100ml", carbs: 5, protein: 3.4, fat: 3.6, kcal: 60, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "carbs", fiber: "none", density: "low", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "盒", grams: 250 }], note: "早餐或加餐常见。", shortHint: "纯牛奶" },
+  { id: "soy_milk", name: "豆浆", type: "protein", per: "100ml", carbs: 3.5, protein: 3, fat: 1.8, kcal: 35, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "carbs", fiber: "low", density: "low", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "杯", grams: 250 }], note: "中式早餐很常见，尽量优先无糖豆浆。", shortHint: "无糖豆浆" },
+  { id: "yogurt", name: "酸奶", type: "protein", per: "100ml", carbs: 6, protein: 4, fat: 3, kcal: 70, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "carbs", fiber: "none", density: "low", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "杯", grams: 200 }], note: "注意含糖酸奶。", shortHint: "无糖酸奶" },
+  { id: "pork", name: "瘦猪肉", type: "protein", per: "100g", carbs: 0, protein: 27, fat: 10, kcal: 200, nutritionProfile: { primaryMacro: "protein", secondaryMacro: "fat", fiber: "none", density: "high", digestibility: "medium" }, source: { kind: "internal_seed", confidence: "medium" }, units: [{ label: "掌心", grams: 100 }], note: "里脊和瘦肉更合适。", shortHint: "掌心瘦肉" },
 ];
 
 
@@ -54,6 +55,7 @@ const foodMeta = {
   egg_tomato: { role: "dish", form: "dish", primaryMacro: "protein", primaryRatio: 0.28, secondaryMacro: "fat", secondaryRatio: 0.56, groups: ["protein", "mixed_dish", "support_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.66 },
   tofu: { role: "dish", form: "soft", primaryMacro: "protein", primaryRatio: 0.4, secondaryMacro: "fat", secondaryRatio: 0.54, groups: ["protein", "plant_protein", "support_protein"], suitableMeals: ["breakfast", "lunch", "dinner"], satiety: 0.72 },
   milk: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.33, groups: ["dairy", "drink_protein", "support_protein"], suitableMeals: ["breakfast", "snack"], satiety: 0.5 },
+  soy_milk: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.34, secondaryMacro: "carbs", secondaryRatio: 0.4, groups: ["soy", "drink_protein", "support_protein"], suitableMeals: ["breakfast", "snack"], satiety: 0.56 },
   yogurt: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.34, groups: ["dairy", "drink_protein", "support_protein"], suitableMeals: ["breakfast", "snack", "dinner"], satiety: 0.62 },
   pork: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.51, secondaryMacro: "fat", secondaryRatio: 0.45, groups: ["protein", "animal_protein", "main_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.8 },
 };
@@ -170,9 +172,9 @@ function isPrimaryProteinFood(food) {
 function getProteinSupportCandidates(mealId, carbFood, proteinFood) {
   const carbId = carbFood?.id;
   const proteinId = proteinFood?.id;
-  const breakfastCandidates = ["egg_boiled", "milk", "yogurt", "tofu"];
-  const snackCandidates = ["egg_boiled", "milk", "yogurt"];
-  const mealCandidates = ["egg_boiled", "tofu", "milk", "yogurt"];
+  const breakfastCandidates = ["egg_boiled", "milk", "soy_milk", "yogurt", "tofu"];
+  const snackCandidates = ["egg_boiled", "milk", "soy_milk", "yogurt"];
+  const mealCandidates = ["egg_boiled", "tofu", "milk", "soy_milk", "yogurt"];
   const base = mealId === "breakfast" ? breakfastCandidates : mealId === "snack" ? snackCandidates : mealCandidates;
   return base.filter((id) => id !== carbId && id !== proteinId);
 }
@@ -185,9 +187,9 @@ const dishLibrary = [
   { id: "breakfast-oats-egg", meal: "breakfast", scene: "home", category: "家常早餐", name: "燕麦鸡蛋早餐杯", tags: ["早餐", "家里", "高蛋白"], carbFoodId: "oats", proteinFoodId: "egg_boiled", note: "很稳，适合早上不想想太多的时候。" },
   { id: "breakfast-bread-yogurt", meal: "breakfast", scene: "convenience", category: "便利店早餐", name: "全麦吐司 + 无糖酸奶 + 水煮蛋", tags: ["早餐", "便利店", "快选"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "参考常见健康早餐结构，保留主食和奶类，同时补一个更稳的蛋白。" },
   { id: "breakfast-porridge-egg", meal: "breakfast", scene: "home", category: "中式早餐", name: "白粥 + 鸡蛋", tags: ["早餐", "家里", "中式"], carbFoodId: "porridge", proteinFoodId: "egg_boiled", note: "白粥饱腹偏弱，所以只保留一份明确蛋白，不再叠奶类。" },
-  { id: "breakfast-baozi-milk", meal: "breakfast", scene: "takeout", category: "中式早餐", name: "肉包 + 纯牛奶 + 水煮蛋", tags: ["早餐", "外卖", "快手"], carbFoodId: "baozi", proteinFoodId: "milk", note: "包子能量够，但蛋白偏弱，所以优先补鸡蛋而不是再补第二主食。" },
+  { id: "breakfast-baozi-milk", meal: "breakfast", scene: "takeout", category: "中式早餐", name: "肉包 + 豆浆 + 水煮蛋", tags: ["早餐", "外卖", "快手"], carbFoodId: "baozi", proteinFoodId: "soy_milk", note: "中式早餐里豆浆比双奶类更自然，和包子、鸡蛋也更搭。" },
   { id: "breakfast-corn-yogurt", meal: "breakfast", scene: "convenience", category: "便利店早餐", name: "玉米 + 酸奶 + 水煮蛋", tags: ["早餐", "便利店", "轻负担"], carbFoodId: "corn", proteinFoodId: "yogurt", note: "轻早餐也尽量补足蛋白，不只停留在玉米加奶类。" },
-  { id: "breakfast-mantou-egg", meal: "breakfast", scene: "home", category: "中式早餐", name: "馒头 + 鸡蛋", tags: ["早餐", "家里", "饱腹"], carbFoodId: "mantou", proteinFoodId: "egg_boiled", note: "保留经典搭配，若需要再补奶类由算法按蛋白缺口决定。" },
+  { id: "breakfast-mantou-egg", meal: "breakfast", scene: "home", category: "中式早餐", name: "馒头 + 鸡蛋 + 豆浆", tags: ["早餐", "家里", "饱腹"], carbFoodId: "mantou", proteinFoodId: "egg_boiled", note: "保留经典中式早餐结构，主食、鸡蛋和豆浆更接近日常习惯。" },
   { id: "breakfast-rice-noodle-egg", meal: "breakfast", scene: "takeout", category: "粉面早餐", name: "清汤米粉加蛋", tags: ["早餐", "外卖", "热乎"], carbFoodId: "rice_noodle", proteinFoodId: "egg_boiled", note: "适合想吃热食、但又不想太油的早上。" },
   { id: "breakfast-dumpling-milk", meal: "breakfast", scene: "home", category: "中式早餐", name: "早餐饺子 + 纯牛奶", tags: ["早餐", "家里", "满足感"], carbFoodId: "dumpling", proteinFoodId: "milk", note: "偶尔想吃得扎实一点时可以这样配。" },
 
@@ -215,7 +217,7 @@ const dishLibrary = [
   { id: "dinner-chicken-bento", meal: "dinner", scene: "convenience", category: "便利店简餐", name: "鸡胸便当晚餐版", tags: ["晚餐", "便利店", "快选"], carbFoodId: "rice", proteinFoodId: "chicken", note: "适合晚归、懒得再想的一餐。" },
 
   { id: "snack-yogurt", meal: "snack", scene: "convenience", category: "加餐", name: "无糖酸奶", tags: ["加餐", "便利店", "补蛋白"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "加餐先轻量，优先单一奶类或再加一个鸡蛋，不做双奶叠加。" },
-  { id: "snack-milk-egg", meal: "snack", scene: "home", category: "加餐", name: "牛奶 + 水煮蛋", tags: ["加餐", "家里", "简单"], carbFoodId: "bread", proteinFoodId: "milk", note: "更适合真饿了但又不想上正餐的时候。" },
+  { id: "snack-milk-egg", meal: "snack", scene: "home", category: "加餐", name: "豆浆 + 水煮蛋", tags: ["加餐", "家里", "简单"], carbFoodId: "bread", proteinFoodId: "soy_milk", note: "如果偏中式口味，豆浆加鸡蛋会比再叠别的饮品更自然。" },
   { id: "snack-corn-yogurt", meal: "snack", scene: "convenience", category: "加餐", name: "玉米 + 酸奶", tags: ["加餐", "便利店", "饱腹"], carbFoodId: "corn", proteinFoodId: "yogurt", note: "保留轻主食 + 奶类的结构，但不再自动叠第二奶类。" },
   { id: "snack-dumpling-lite", meal: "snack", scene: "home", category: "加餐", name: "少量饺子 + 热饮", tags: ["加餐", "家里", "满足感"], carbFoodId: "dumpling", proteinFoodId: "egg_boiled", note: "偶尔嘴馋时，比直接开大餐更可控。" },
 ];
@@ -296,37 +298,118 @@ function bmr({ sex, weight, height, age }) { const safeWeight = Math.max(Number(
 function inferActivity(form) { const cardio = Number(form.weeklyCardioMinutes) || 0; const strength = Number(form.weeklyStrengthMinutes) || 0; const total = cardio + strength; if (total >= 360 || strength >= 180) return "strength"; if (total >= 180) return "moderate"; if (total >= 60) return "light"; return "sedentary"; }
 function calculateNutrition(form) { const weight = Math.max(Number(form.weight) || 0, 0); const height = Math.max(Number(form.height) || 0, 0); const age = Math.max(Number(form.age) || 0, 0); const inferredActivity = inferActivity(form); const selectedActivity = activityMap[inferredActivity] || activityMap.sedentary; const selectedGoal = goalMap[form.goal] || goalMap.standard_cut; const BMR = bmr({ sex: form.sex, weight, height, age }); const TDEE = BMR * selectedActivity.factor; const minKcal = form.sex === "male" ? selectedGoal.minKcalMale : selectedGoal.minKcalFemale; const targetKcal = Math.max(TDEE - selectedGoal.deficit, minKcal); const protein = weight * selectedGoal.proteinFactor; const fat = (targetKcal * selectedGoal.fatRatio) / 9; const carbs = Math.max((targetKcal - protein * 4 - fat * 9) / 4, 0); return { BMR, TDEE, kcal: targetKcal, protein, fat, carbs }; }
 function gramsFor(food, macro, target) { const density = food?.[macro]; const safeTarget = Math.max(Number(target) || 0, 0); if (!density || density <= 0 || safeTarget <= 0) return null; return (safeTarget / density) * 100; }
+
+const portionBounds = {
+  rice: { category: "solid", min: 80, default: 120, max: 220, step: 20, unitLabel: "份", portionName: "米饭" },
+  noodle: { category: "solid", min: 120, default: 180, max: 260, step: 20, unitLabel: "份", portionName: "面" },
+  oats: { category: "solid", min: 30, default: 50, max: 80, step: 10, unitLabel: "份", portionName: "燕麦" },
+  bread: { category: "solid", min: 35, default: 70, max: 105, step: 35, unitLabel: "份", portionName: "面包" },
+  sweet_potato: { category: "solid", min: 120, default: 220, max: 320, step: 20, unitLabel: "份", portionName: "红薯" },
+  corn: { category: "solid", min: 120, default: 200, max: 260, step: 20, unitLabel: "份", portionName: "玉米" },
+  porridge: { category: "semiLiquid", min: 100, default: 180, max: 250, step: 50, unitLabel: "碗", portionName: "白粥" },
+  dumpling: { category: "solid", min: 100, default: 150, max: 220, step: 20, unitLabel: "份", portionName: "饺子" },
+  baozi: { category: "solid", min: 90, default: 120, max: 240, step: 30, unitLabel: "份", portionName: "包子" },
+  mantou: { category: "solid", min: 70, default: 100, max: 160, step: 30, unitLabel: "份", portionName: "馒头" },
+  rice_noodle: { category: "solid", min: 120, default: 180, max: 260, step: 20, unitLabel: "份", portionName: "米粉" },
+  chicken: { category: "solid", min: 90, default: 120, max: 180, step: 10, unitLabel: "份", portionName: "鸡胸肉" },
+  chicken_leg: { category: "solid", min: 100, default: 130, max: 180, step: 10, unitLabel: "份", portionName: "鸡腿肉" },
+  beef: { category: "solid", min: 80, default: 100, max: 160, step: 10, unitLabel: "份", portionName: "牛肉" },
+  fish: { category: "solid", min: 100, default: 150, max: 200, step: 10, unitLabel: "份", portionName: "鱼肉" },
+  shrimp: { category: "solid", min: 90, default: 120, max: 180, step: 10, unitLabel: "份", portionName: "虾" },
+  pork: { category: "solid", min: 80, default: 100, max: 160, step: 10, unitLabel: "份", portionName: "瘦猪肉" },
+  tofu: { category: "solid", min: 120, default: 200, max: 300, step: 20, unitLabel: "份", portionName: "豆腐" },
+  egg_boiled: { category: "solid", min: 50, default: 100, max: 150, step: 50, unitLabel: "份", portionName: "水煮蛋" },
+  egg_steamed: { category: "semiLiquid", min: 100, default: 120, max: 250, step: 50, unitLabel: "碗", portionName: "鸡蛋羹" },
+  egg_fried: { category: "solid", min: 55, default: 55, max: 110, step: 55, unitLabel: "份", portionName: "煎蛋" },
+  egg_tomato: { category: "solid", min: 120, default: 180, max: 260, step: 20, unitLabel: "份", portionName: "西红柿炒鸡蛋" },
+  milk: { category: "liquid", min: 150, default: 240, max: 240, step: 30, unitLabel: "杯", portionName: "牛奶" },
+  soy_milk: { category: "liquid", min: 150, default: 240, max: 240, step: 30, unitLabel: "杯", portionName: "豆浆" },
+  yogurt: { category: "liquid", min: 150, default: 210, max: 240, step: 30, unitLabel: "杯", portionName: "酸奶" },
+};
+
+function snapPortion(value, step, min) {
+  if (!value || !step) return value;
+  const safeMin = min || 0;
+  return safeMin + Math.round((value - safeMin) / step) * step;
+}
+
+function clampPortion(food, grams, context = {}) {
+  if (!food || !grams || grams <= 0) return null;
+  const bounds = portionBounds[food.id];
+  if (!bounds) return grams;
+  const { mealId = "", isSupport = false } = context;
+  let min = bounds.min;
+  let max = bounds.max;
+
+  if ((food.id === "milk" || food.id === "soy_milk" || food.id === "yogurt") && mealId === "snack" && !isSupport) {
+    max = Math.min(max, bounds.default || max);
+  }
+
+  if ((food.id === "egg_boiled" || food.id === "egg_fried") && mealId === "snack") {
+    max = Math.min(max, 110);
+  }
+
+  const clamped = Math.min(Math.max(grams, min), max);
+  return snapPortion(clamped, bounds.step, min);
+}
+
+function getReasonablePortion(food, macro, target, context = {}) {
+  const raw = gramsFor(food, macro, target);
+  return clampPortion(food, raw, context);
+}
+
 function formatLifestyleUnit(food, grams) { if (!grams || grams <= 0 || !food.units?.length) return "—"; const unit = food.units[0]; const count = grams / unit.grams; const roundedCount = count < 2 ? round(count, 1) : round(count, 0); const clean = `${roundedCount}`; if (unit.label === "掌心") return `约 ${clean}个掌心大小`; if (unit.label === "份") return food.shortHint ? `约 ${clean}份，${food.shortHint}` : `约 ${clean}份`; if (unit.label === "盒" && food.id === "tofu") return count < 1 ? `约 ${round(count * 2, 1)}半盒豆腐` : `约 ${clean}盒豆腐`; if (unit.label === "只" && food.id === "shrimp") return `约 ${clean}只中虾`; return `约 ${clean}${unit.label}${food.shortHint ? `，${food.shortHint}` : ""}`; }
+
+function formatLiquidPortion(food, grams) {
+  const g = Math.round(grams);
+  const label = g <= 150 ? "约半杯" : g <= 180 ? "约1小杯" : g <= 210 ? "约1杯" : "约1大杯";
+  return `${label}（约${g}毫升）`;
+}
+
+function formatSemiLiquidPortion(food, grams) {
+  const g = Math.round(grams);
+  const label = g <= 100 ? "约半小碗" : g <= 150 ? "约1小碗" : g <= 200 ? "约1碗" : "约1大碗";
+  return `${label}（约${g}毫升）`;
+}
+
+function getSolidPortionLabel(ratio) {
+  if (ratio <= 0.75) return "约1小份";
+  if (ratio <= 1.15) return "约1份";
+  if (ratio <= 1.4) return "约1大份";
+  return `约${round(ratio * 2, 0) / 2}份`;
+}
+
+function formatSolidPortion(food, grams, bounds) {
+  const g = Math.round(grams);
+  const base = bounds?.default || bounds?.min || g;
+  const ratio = g / Math.max(base, 1);
+  const label = getSolidPortionLabel(ratio);
+  const name = bounds?.portionName || food.name;
+
+  const itemSpecific = {
+    rice: g <= 100 ? `约1小份米饭（约${g}克）` : g <= 160 ? `约1份米饭（约${g}克）` : `约1大份米饭（约${g}克）`,
+    noodle: g <= 160 ? `约1小份面（约${g}克）` : g <= 220 ? `约1份面（约${g}克）` : `约1大份面（约${g}克）`,
+    oats: `${label}燕麦（约${g}克）`,
+    bread: g <= 40 ? `约1小份面包（约${g}克）` : g <= 75 ? `约1份面包（约${g}克）` : `约1大份面包（约${g}克）`,
+    sweet_potato: g <= 180 ? `约1小份红薯（约${g}克）` : g <= 260 ? `约1份红薯（约${g}克）` : `约1大份红薯（约${g}克）`,
+    corn: g <= 160 ? `约1小份玉米（约${g}克）` : g <= 220 ? `约1份玉米（约${g}克）` : `约1大份玉米（约${g}克）`,
+    dumpling: g <= 140 ? `约1小份饺子（约${g}克）` : g <= 180 ? `约1份饺子（约${g}克）` : `约1大份饺子（约${g}克）`,
+    baozi: g <= 120 ? `约1份包子（约${g}克）` : `约1大份包子（约${g}克）`,
+    mantou: g <= 90 ? `约1小份馒头（约${g}克）` : g <= 120 ? `约1份馒头（约${g}克）` : `约1大份馒头（约${g}克）`,
+    rice_noodle: g <= 160 ? `约1小份米粉（约${g}克）` : g <= 220 ? `约1份米粉（约${g}克）` : `约1大份米粉（约${g}克）`,
+    egg_boiled: g <= 60 ? `约1份水煮蛋（约${g}克）` : g <= 110 ? `约2份水煮蛋（约${g}克）` : `约3份水煮蛋（约${g}克）`,
+    egg_fried: g <= 60 ? `约1份煎蛋（约${g}克）` : `约2份煎蛋（约${g}克）`,
+  };
+  return itemSpecific[food.id] || `${label}${name}（约${g}克）`;
+}
+
 function practicalPortion(food, grams) {
   if (!food || !grams || grams <= 0) return { grams: null, text: "—" };
+  const bounds = portionBounds[food.id] || { category: "solid", default: grams };
   const g = Math.round(grams);
-  const rules = {
-    rice: g <= 90 ? `约小半碗（约${g}克）` : g <= 140 ? `约1小碗（约${g}克）` : g <= 190 ? `约1大碗或1.5小碗（约${g}克）` : `约2小碗以内（约${g}克）`,
-    noodle: g <= 150 ? `约小半碗面（约${g}克）` : g <= 240 ? `约1碗面（约${g}克）` : `约1大碗面（约${g}克）`,
-    oats: `约${round(g / 10)}勺干燕麦（约${g}克）`,
-    bread: g <= 40 ? `约1片（约${g}克）` : g <= 75 ? `约2片（约${g}克）` : `约3片以内（约${g}克）`,
-    sweet_potato: g <= 220 ? `约1个中等红薯（约${g}克）` : `约1个大红薯（约${g}克）`,
-    corn: g <= 200 ? `约1根玉米（约${g}克）` : `约1根大玉米（约${g}克）`,
-    porridge: g <= 250 ? `约1碗白粥（约${g}克）` : g <= 380 ? `约1大碗白粥（约${g}克）` : `约1大碗白粥 + 明确蛋白搭配（约${g}克）`,
-    dumpling: g <= 150 ? `约6个饺子（约${g}克）` : `约8个饺子（约${g}克）`,
-    baozi: g <= 120 ? `约1个包子（约${g}克）` : `约2个包子以内（约${g}克）`,
-    mantou: g <= 100 ? `约1个馒头（约${g}克）` : `约1个半馒头（约${g}克）`,
-    rice_noodle: g <= 180 ? `约1小碗米粉（约${g}克）` : `约1碗米粉（约${g}克）`,
-    chicken: g <= 130 ? `约1个掌心，约${round(g / 50, 1)}两（约${g}克）` : `约1个半掌心，约${round(g / 50, 1)}两（约${g}克）`,
-    chicken_leg: g <= 140 ? `约1只去骨鸡腿（约${g}克）` : `约1只偏大的去骨鸡腿（约${g}克）`,
-    beef: g <= 120 ? `约1个掌心，约${round(g / 50, 1)}两（约${g}克）` : `约1个半掌心，约${round(g / 50, 1)}两（约${g}克）`,
-    fish: g <= 160 ? `约1大块鱼肉，约${round(g / 50, 1)}两（约${g}克）` : `约1大块半鱼肉，约${round(g / 50, 1)}两（约${g}克）`,
-    shrimp: g <= 150 ? `约10-12只中虾（约${g}克）` : `约12-15只中虾（约${g}克）`,
-    pork: g <= 120 ? `约1个掌心，约${round(g / 50, 1)}两（约${g}克）` : `约1个半掌心，约${round(g / 50, 1)}两（约${g}克）`,
-    tofu: g <= 220 ? `约半盒豆腐（约${g}克）` : `约半盒到3/4盒豆腐（约${g}克）`,
-    egg_boiled: g <= 60 ? `约1个水煮蛋（约${g}克）` : g <= 110 ? `约2个水煮蛋（约${g}克）` : `约2到3个水煮蛋（约${g}克）`,
-    egg_steamed: g <= 120 ? `约1小碗鸡蛋羹（约${g}克）` : `约1大碗鸡蛋羹（约${g}克）`,
-    egg_fried: g <= 60 ? `约1个煎蛋（约${g}克）` : `约2个煎蛋（约${g}克）`,
-    egg_tomato: g <= 180 ? `约1份西红柿炒鸡蛋（约${g}克）` : `约1大份西红柿炒鸡蛋（约${g}克）`,
-    milk: g <= 300 ? `约1盒纯牛奶（约${g}毫升）` : `约1大盒纯牛奶（约${g}毫升）`,
-    yogurt: g <= 220 ? `约1杯无糖酸奶（约${g}毫升）` : `约1大杯无糖酸奶（约${g}毫升）`,
-  };
-  return { grams: g, text: rules[food.id] || `${formatLifestyleUnit(food, grams)}（约${g}克）` };
+  if (bounds.category === "liquid") return { grams: g, text: formatLiquidPortion(food, g) };
+  if (bounds.category === "semiLiquid") return { grams: g, text: formatSemiLiquidPortion(food, g) };
+  return { grams: g, text: formatSolidPortion(food, g, bounds) };
 }
 function buildMealItems(dish, targets) {
   const carbFood = foods.find((food) => food.id === dish.carbFoodId);
@@ -348,12 +431,12 @@ function buildMealItems(dish, targets) {
   if (carbFood && carbTarget > 0) {
     const carbMeta = getFoodMeta(carbFood);
     usedRoles.add(carbMeta.role);
-    items.push({ name: carbFood.name, text: practicalPortion(carbFood, gramsFor(carbFood, "carbs", carbTarget * template.stapleShare)).text, role: carbMeta.role });
+    items.push({ name: carbFood.name, text: practicalPortion(carbFood, getReasonablePortion(carbFood, "carbs", carbTarget * template.stapleShare, { mealId: dish.meal, isSupport: false })).text, role: carbMeta.role });
   }
   if (proteinFood && proteinTarget > 0) {
     const proteinMeta = getFoodMeta(proteinFood);
     usedRoles.add(proteinMeta.role);
-    items.push({ name: proteinFood.name, text: practicalPortion(proteinFood, "protein" in proteinFood ? gramsFor(proteinFood, "protein", proteinTarget * template.proteinShare) : null).text, role: proteinMeta.role });
+    items.push({ name: proteinFood.name, text: practicalPortion(proteinFood, getReasonablePortion(proteinFood, "protein", proteinTarget * template.proteinShare, { mealId: dish.meal, isSupport: false })).text, role: proteinMeta.role });
   }
 
   let coveredCarbs = carbFood ? template.stapleShare : 0;
@@ -371,7 +454,7 @@ function buildMealItems(dish, targets) {
 
     const supportProteinTarget = proteinTarget * Math.max(mealRule.proteinFloor - coveredProtein, 0);
     if (supportProteinTarget <= 0) return;
-    const grams = gramsFor(supportFood, "protein", supportProteinTarget);
+    const grams = getReasonablePortion(supportFood, "protein", supportProteinTarget, { mealId: dish.meal, isSupport: true });
     const portion = practicalPortion(supportFood, grams);
     if (portion.text === "—") return;
 
@@ -392,7 +475,7 @@ function buildMealItems(dish, targets) {
 function scoreDish(dish, preferences, historyCounts) { const dishName = dish.name; const foodIds = [dish.carbFoodId, dish.proteinFoodId].filter(Boolean); if (preferences.dislikedDishes.includes(dishName)) return -999; if (foodIds.some((id) => preferences.avoidFoods.includes(id))) return -999; let score = scoreMealCombination(dish); if (preferences.favoriteDishes.includes(dishName)) score += 4; if (foodIds.some((id) => preferences.favoriteFoods.includes(id))) score += 3; if (preferences.preferredScenes.includes(dish.scene)) score += 2; score += (historyCounts[dishName] || 0) * 0.8; return score; }
 function getDishRecommendations({ mealId, scene, preferences, historyCounts, limit = 6, offset = 0 }) { return dishLibrary.filter((dish) => dish.meal === mealId && (!scene || dish.scene === scene)).map((dish) => ({ ...dish, score: scoreDish(dish, preferences, historyCounts), nutritionScore: scoreMealCombination(dish) })).filter((dish) => dish.score > -999).sort((a, b) => b.score - a.score || b.nutritionScore - a.nutritionScore).slice(offset, offset + limit); }
 function buildTodayProgress(plans, chosenMealIds) { const mealKeys = ["breakfast", "lunch", "dinner", "snack"]; const planned = mealKeys.filter((meal) => plans[meal]).length; const completed = mealKeys.filter((meal) => chosenMealIds.includes(meal)).length; return { planned, completed, remaining: Math.max(planned - completed, 0) }; }
-function runSelfTests() { const rice = foods.find((food) => food.id === "rice"); const chicken = foods.find((food) => food.id === "chicken"); const maleDefault = calculateNutrition({ sex: "male", age: 35, height: 175, weight: 85, activity: "sedentary", goal: "standard_cut" }); const preferences = { avoidFoods: ["beef"], favoriteFoods: ["rice"], favoriteDishes: [], dislikedDishes: [], preferredScenes: [] }; const recs = getDishRecommendations({ mealId: "lunch", scene: "takeout", preferences, historyCounts: {} }); const eggPortion = practicalPortion(foods.find((food) => food.id === "egg_boiled"), 100); const breakfastScore = scoreMealCombination(dishLibrary.find((item) => item.id === "breakfast-oats-egg")); return [{ name: "男性 BMR：85kg / 175cm / 35岁", pass: nearlyEqual(bmr({ sex: "male", weight: 85, height: 175, age: 35 }), 1773.75, 0.01) }, { name: "60g 碳水 ≈ 214g 熟米饭", pass: nearlyEqual(gramsFor(rice, "carbs", 60), 214.29, 0.1) }, { name: "40g 蛋白 ≈ 129g 鸡胸肉", pass: nearlyEqual(gramsFor(chicken, "protein", 40), 129.03, 0.1) }, { name: "默认男性目标热量不低于保护线", pass: maleDefault.kcal >= 1500 }, { name: "标准三餐比例合计为100%", pass: Object.values(presetPlans.balanced_three.ratios).reduce((sum, value) => sum + value, 0) === 100 }, { name: "忌口食材不会出现在午餐推荐里", pass: recs.every((item) => item.proteinFoodId !== "beef") }, { name: "当前菜肴库不少于30条", pass: dishLibrary.length >= 30 }, { name: "两个鸡蛋约100克", pass: eggPortion.text.includes("100") }, { name: "健康早餐组合应有正向营养评分", pass: breakfastScore > 0 }]; }
+function runSelfTests() { const rice = foods.find((food) => food.id === "rice"); const chicken = foods.find((food) => food.id === "chicken"); const milk = foods.find((food) => food.id === "milk"); const soyMilk = foods.find((food) => food.id === "soy_milk"); const maleDefault = calculateNutrition({ sex: "male", age: 35, height: 175, weight: 85, activity: "sedentary", goal: "standard_cut" }); const preferences = { avoidFoods: ["beef"], favoriteFoods: ["rice"], favoriteDishes: [], dislikedDishes: [], preferredScenes: [] }; const recs = getDishRecommendations({ mealId: "lunch", scene: "takeout", preferences, historyCounts: {} }); const eggPortion = practicalPortion(foods.find((food) => food.id === "egg_boiled"), 100); const breakfastScore = scoreMealCombination(dishLibrary.find((item) => item.id === "breakfast-oats-egg")); const milkMin = getReasonablePortion(milk, "protein", 2.5, { mealId: "breakfast", isSupport: true }); const milkMax = getReasonablePortion(milk, "protein", 40, { mealId: "breakfast", isSupport: false }); const soyMilkPortion = getReasonablePortion(soyMilk, "protein", 12, { mealId: "breakfast", isSupport: false }); return [{ name: "男性 BMR：85kg / 175cm / 35岁", pass: nearlyEqual(bmr({ sex: "male", weight: 85, height: 175, age: 35 }), 1773.75, 0.01) }, { name: "60g 碳水 ≈ 214g 熟米饭", pass: nearlyEqual(gramsFor(rice, "carbs", 60), 214.29, 0.1) }, { name: "40g 蛋白 ≈ 129g 鸡胸肉", pass: nearlyEqual(gramsFor(chicken, "protein", 40), 129.03, 0.1) }, { name: "默认男性目标热量不低于保护线", pass: maleDefault.kcal >= 1500 }, { name: "标准三餐比例合计为100%", pass: Object.values(presetPlans.balanced_three.ratios).reduce((sum, value) => sum + value, 0) === 100 }, { name: "忌口食材不会出现在午餐推荐里", pass: recs.every((item) => item.proteinFoodId !== "beef") }, { name: "当前菜肴库不少于30条", pass: dishLibrary.length >= 30 }, { name: "两个鸡蛋约100克", pass: eggPortion.text.includes("100") }, { name: "健康早餐组合应有正向营养评分", pass: breakfastScore > 0 }, { name: "牛奶下限不低于150ml", pass: milkMin >= 150 }, { name: "牛奶上限不高于240ml", pass: milkMax <= 240 }, { name: "豆浆份量应落在一杯范围内", pass: soyMilkPortion >= 150 && soyMilkPortion <= 240 }]; }
 
 function CardShell({ children, className = "" }) { return <div className={`rounded-3xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</div>; }
 function Badge({ children, tone = "slate" }) { const classes = { slate: "bg-slate-100 text-slate-700", green: "bg-emerald-100 text-emerald-800", red: "bg-red-100 text-red-800", blue: "bg-blue-100 text-blue-800", amber: "bg-amber-100 text-amber-900", dark: "bg-slate-900 text-white" }; return <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${classes[tone] || classes.slate}`}>{children}</span>; }
@@ -542,6 +625,15 @@ function getDietTip(context = {}) {
   return pickTip(pool, daySeed + (mealId ? mealId.length : 0) + (scene ? scene.length : 0));
 }
 
+function FoodLibraryPage({ setPage }) {
+  const groupedFoods = useMemo(() => ({
+    主食类: foods.filter((food) => food.type === "carb"),
+    蛋白类: foods.filter((food) => food.type === "protein"),
+  }), []);
+
+  return <div className="space-y-5"><button className="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-700" onClick={() => setPage("home")}>返回首页</button><CardShell><div className="p-5"><SectionTitle title="食材信息库" desc="这里展示系统当前用于计算和推荐参考的核心食材数据库。用户平时不一定细看，但这套底层数据会直接影响份量、搭配和推荐结果。" /><div className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">当前信息库按每100g / 100ml 记录主要营养成分，并结合适用餐型、生活化份量和产品规则参与推荐计算。</div></div></CardShell>{Object.entries(groupedFoods).map(([groupName, items]) => <CardShell key={groupName}><div className="p-5"><div className="text-lg font-semibold text-slate-900">{groupName}</div><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{items.map((food) => { const meta = getFoodMeta(food); const portion = portionBounds[food.id]; return <div key={food.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><div className="flex items-center justify-between gap-2"><div className="font-semibold text-slate-900">{food.name}</div><Badge tone="blue">{food.per || "每100g"}</Badge></div><div className="mt-2 text-xs text-slate-500">{food.note}</div><div className="mt-3 space-y-1 text-sm text-slate-700"><div>主要营养：{meta.primaryMacro === "protein" ? "蛋白质" : meta.primaryMacro === "carbs" ? "碳水" : meta.primaryMacro}</div><div>次要营养：{meta.secondaryMacro === "protein" ? "蛋白质" : meta.secondaryMacro === "carbs" ? "碳水" : meta.secondaryMacro === "fat" ? "脂肪" : meta.secondaryMacro}</div><div>碳水：{food.carbs}g</div><div>蛋白：{food.protein}g</div><div>脂肪：{food.fat}g</div><div>热量：{food.kcal} kcal</div>{food.nutritionProfile?.fiber ? <div>纤维特征：{food.nutritionProfile.fiber}</div> : null}{food.nutritionProfile?.digestibility ? <div>消化速度：{food.nutritionProfile.digestibility}</div> : null}{portion ? <div>常规份量：{portion.default}{food.per === "100ml" ? "ml" : "g"}（范围 {portion.min}-{portion.max}{food.per === "100ml" ? "ml" : "g"}）</div> : null}<div>适用餐型：{(meta.suitableMeals || []).map((meal) => meal === "breakfast" ? "早餐" : meal === "lunch" ? "午餐" : meal === "dinner" ? "晚餐" : meal === "snack" ? "加餐" : meal).join(" / ")}</div></div></div>; })}</div></div></CardShell>)}</div>;
+}
+
 function TestPage() { const tests = useMemo(() => runSelfTests(), []); const passed = tests.filter((test) => test.pass).length; return <CardShell><div className="p-5"><div className="mb-4 flex items-center justify-between gap-3"><SectionTitle title="逻辑自检" desc="保留最小验证页，避免改着改着把推荐逻辑改坏。" /><Badge tone={passed === tests.length ? "green" : "red"}>{passed}/{tests.length} 通过</Badge></div><div className="space-y-2">{tests.map((test) => <div key={test.name} className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 text-sm"><span>{test.name}</span><span className={test.pass ? "font-semibold text-emerald-700" : "font-semibold text-red-700"}>{test.pass ? "PASS" : "FAIL"}</span></div>)}</div></div></CardShell>; }
 
 export default function NutritionWebToolMVP() {
@@ -599,5 +691,5 @@ export default function NutritionWebToolMVP() {
 
   function finishProfile() { setProfileCompleted(true); goPage("home"); }
 
-  return <div className="min-h-screen bg-slate-100 px-3 py-4 text-slate-900 sm:px-4 md:px-8 md:py-8"><div className="mx-auto max-w-5xl space-y-5">{page === "home" ? <><CardShell className="overflow-hidden border-none bg-white shadow-sm"><div className="p-5 sm:p-6"><div className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{getGreeting(nickname)}</div><div className="mt-2 text-sm text-slate-500">不用想太多，按顺手的入口直接点就行。</div></div></CardShell><div className="grid gap-3"><button className="rounded-3xl bg-slate-900 px-5 py-5 text-left text-white shadow-sm" onClick={() => setMealFlowOpen(true)}><div className="text-lg font-semibold">准备用餐</div><div className="mt-1 text-sm text-slate-300">{Object.keys(activeDayPlan || {}).length ? "今天已有提前安排，点进去会优先按你的计划参考。" : "先选是哪一餐，我直接给你推荐。"}</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("today")}><div className="text-lg font-semibold">今日计划</div><div className="mt-1 text-sm text-slate-500">看看今天有哪些已经提前定好的餐。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("planning")}><div className="text-lg font-semibold">明日餐食</div><div className="mt-1 text-sm text-slate-500">提前把明天想好，饭点少纠结。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("personal")}><div className="text-lg font-semibold">资料卡</div><div className="mt-1 text-sm text-slate-500">查看和更新你的建档资料。</div></button><CardShell className="border-none bg-amber-50"><div className="p-5"><div className="text-sm font-semibold text-amber-900">饮食小妙招</div><div className="mt-2 text-sm leading-6 text-amber-900/90">{homeDietTip}</div></div></CardShell></div></> : null}{page !== "home" ? <div className="flex gap-2"><button className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-700 shadow-sm" onClick={() => goPage("home")}>首页</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "today" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("today")}>今日计划</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "planning" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("planning")}>明日餐食</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "personal" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("personal")}>资料卡</button></div> : null}{!ratioValid && page !== "home" ? <CardShell><div className="p-5 text-sm text-red-700">当前餐次比例还没调到 100%，推荐会受影响，建议先去资料卡完成配置。</div></CardShell> : null}{page === "planning" && <PlanningPage mealMode={mealMode} preferences={preferences} historyCounts={historyCounts} tomorrowPlan={tomorrowPlan} setTomorrowPlan={setTomorrowPlan} tomorrowPlanDate={tomorrowPlanDate} setTomorrowPlanDate={setTomorrowPlanDate} setPage={setPage} />}{page === "today" && <TodayPage nutrition={nutrition} mealMode={mealMode} activeDayPlan={activeDayPlan} chosenMealIds={chosenMealIds} nickname={nickname} setPage={setPage} activeDayPlanDate={activeDayPlanDate} />}{page === "personal" && <PersonalInfoPage form={form} set={set} nutrition={nutrition} mealMode={mealMode} onMealModeChange={handleMealModeChange} ratios={ratios} onRatioChange={handleRatioChange} activePreset={activePreset} onApplyPreset={applyPreset} preferences={preferences} setPreferences={setPreferences} guestId={guestId} nickname={nickname} setNickname={setNickname} setPage={setPage} />}</div><MealFlowModal open={mealFlowOpen} onClose={() => setMealFlowOpen(false)} mealMode={mealMode} ratios={ratios} nutrition={nutrition} preferences={preferences} historyCounts={historyCounts} onCompleteMeal={handleCompleteMeal} />{ready && !guestId ? <WelcomeOverlay nickname={nickname} setNickname={setNickname} onStart={startGuestMode} /> : null}{ready && guestId && !profileCompleted ? <OnboardingCard nickname={nickname} setNickname={setNickname} form={form} set={set} mealMode={mealMode} setMealMode={handleMealModeChange} ratios={ratios} setRatios={setRatios} preferences={preferences} setPreferences={setPreferences} onFinish={finishProfile} /> : null}</div>;
+  return <div className="min-h-screen bg-slate-100 px-3 py-4 text-slate-900 sm:px-4 md:px-8 md:py-8"><div className="mx-auto max-w-5xl space-y-5">{page === "home" ? <><CardShell className="overflow-hidden border-none bg-white shadow-sm"><div className="p-5 sm:p-6"><div className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{getGreeting(nickname)}</div><div className="mt-2 text-sm text-slate-500">不用想太多，按顺手的入口直接点就行。</div></div></CardShell><div className="grid gap-3"><button className="rounded-3xl bg-slate-900 px-5 py-5 text-left text-white shadow-sm" onClick={() => setMealFlowOpen(true)}><div className="text-lg font-semibold">准备用餐</div><div className="mt-1 text-sm text-slate-300">{Object.keys(activeDayPlan || {}).length ? "今天已有提前安排，点进去会优先按你的计划参考。" : "先选是哪一餐，我直接给你推荐。"}</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("today")}><div className="text-lg font-semibold">今日计划</div><div className="mt-1 text-sm text-slate-500">看看今天有哪些已经提前定好的餐。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("planning")}><div className="text-lg font-semibold">明日餐食</div><div className="mt-1 text-sm text-slate-500">提前把明天想好，饭点少纠结。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("food-library")}><div className="text-lg font-semibold">食材信息库</div><div className="mt-1 text-sm text-slate-500">查看系统当前用于计算和推荐参考的食材数据库。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("personal")}><div className="text-lg font-semibold">资料卡</div><div className="mt-1 text-sm text-slate-500">查看和更新你的建档资料。</div></button><CardShell className="border-none bg-amber-50"><div className="p-5"><div className="text-sm font-semibold text-amber-900">饮食小妙招</div><div className="mt-2 text-sm leading-6 text-amber-900/90">{homeDietTip}</div></div></CardShell></div></> : null}{page !== "home" ? <div className="flex gap-2"><button className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-700 shadow-sm" onClick={() => goPage("home")}>首页</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "today" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("today")}>今日计划</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "planning" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("planning")}>明日餐食</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "food-library" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("food-library")}>食材库</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "personal" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("personal")}>资料卡</button></div> : null}{!ratioValid && page !== "home" ? <CardShell><div className="p-5 text-sm text-red-700">当前餐次比例还没调到 100%，推荐会受影响，建议先去资料卡完成配置。</div></CardShell> : null}{page === "planning" && <PlanningPage mealMode={mealMode} preferences={preferences} historyCounts={historyCounts} tomorrowPlan={tomorrowPlan} setTomorrowPlan={setTomorrowPlan} tomorrowPlanDate={tomorrowPlanDate} setTomorrowPlanDate={setTomorrowPlanDate} setPage={setPage} />}{page === "today" && <TodayPage nutrition={nutrition} mealMode={mealMode} activeDayPlan={activeDayPlan} chosenMealIds={chosenMealIds} nickname={nickname} setPage={setPage} activeDayPlanDate={activeDayPlanDate} />}{page === "personal" && <PersonalInfoPage form={form} set={set} nutrition={nutrition} mealMode={mealMode} onMealModeChange={handleMealModeChange} ratios={ratios} onRatioChange={handleRatioChange} activePreset={activePreset} onApplyPreset={applyPreset} preferences={preferences} setPreferences={setPreferences} guestId={guestId} nickname={nickname} setNickname={setNickname} setPage={setPage} />}</div><MealFlowModal open={mealFlowOpen} onClose={() => setMealFlowOpen(false)} mealMode={mealMode} ratios={ratios} nutrition={nutrition} preferences={preferences} historyCounts={historyCounts} onCompleteMeal={handleCompleteMeal} />{ready && !guestId ? <WelcomeOverlay nickname={nickname} setNickname={setNickname} onStart={startGuestMode} /> : null}{ready && guestId && !profileCompleted ? <OnboardingCard nickname={nickname} setNickname={setNickname} form={form} set={set} mealMode={mealMode} setMealMode={handleMealModeChange} ratios={ratios} setRatios={setRatios} preferences={preferences} setPreferences={setPreferences} onFinish={finishProfile} /> : null}</div>;
 }
