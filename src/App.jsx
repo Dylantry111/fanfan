@@ -113,9 +113,25 @@ function formatLifestyleUnit(food, grams) {
   if (!grams || grams <= 0 || !food.units?.length) return "—";
   const unit = food.units[0];
   const count = grams / unit.grams;
-  const roundedCount = round(count, count < 2 ? 1 : 0);
-  const countText = roundedCount === 1 ? "约 1 份" : `约 ${roundedCount} 份`;
-  return `${countText} ${unit.label}${food.shortHint ? ` · ${food.shortHint}` : ""}`;
+  const roundedCount = count < 2 ? round(count, 1) : round(count, 0);
+  const cleanCount = Number.isInteger(roundedCount) ? String(roundedCount) : String(roundedCount);
+  const label = unit.label || "份";
+
+  if (label.startsWith("1个")) return `约 ${cleanCount}个`;
+  if (label.startsWith("1片")) return `约 ${cleanCount}片`;
+  if (label.startsWith("1块")) return `约 ${cleanCount}块`;
+  if (label.startsWith("1根")) return `约 ${cleanCount}根`;
+  if (label.startsWith("1只")) return `约 ${cleanCount}只`;
+  if (label.startsWith("1杯")) return `约 ${cleanCount}杯`;
+  if (label.startsWith("1盒")) return `约 ${cleanCount}盒`;
+  if (label.startsWith("1掌心")) return `约 ${cleanCount}个掌心大小`;
+  if (label.startsWith("1个蛋清")) return `约 ${cleanCount}个蛋清`;
+  if (label === "1盒/杯") return `约 ${cleanCount}盒或杯`;
+  if (label === "1份") return food.shortHint ? `约 ${cleanCount}份，${food.shortHint}` : `约 ${cleanCount}份`;
+  if (label === "半盒") return count <= 1 ? `约 ${cleanCount}份半盒` : `约 ${round(count * 0.5, 1)}盒`;
+  if (label.includes("碗")) return `约 ${cleanCount}${label}`;
+
+  return food.shortHint ? `约 ${cleanCount}${label}，${food.shortHint}` : `约 ${cleanCount}${label}`;
 }
 
 function calculateNutrition(form) {
@@ -221,6 +237,7 @@ function FoodCompactCard({ food, target, macro }) {
         <span className="text-slate-400">/</span>
         <span>{formatLifestyleUnit(food, grams)}</span>
       </div>
+      <div className="mt-1 text-xs leading-5 text-slate-500">{food.note}</div>
       <div className="mt-2 text-xs text-slate-500">每100g：碳水 {food.carbs}g · 蛋白 {food.protein}g · 脂肪 {food.fat}g</div>
     </div>
   );
