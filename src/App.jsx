@@ -149,6 +149,22 @@ function formatLifestyleUnit(food, grams) { if (!grams || grams <= 0 || !food.un
 function practicalPortion(food, grams) {
   if (!food || !grams || grams <= 0) return { grams: null, text: "—" };
   const g = Math.round(grams);
+  const cappedPortions = {
+    egg_boiled: 150,
+    egg_fried: 110,
+    milk: 500,
+    yogurt: 350,
+  };
+  if (cappedPortions[food.id] && g > cappedPortions[food.id]) {
+    const cap = cappedPortions[food.id];
+    const baseText = {
+      egg_boiled: `建议按2到3个水煮蛋（约${cap}克）搭配其他蛋白来源，别硬凑到 ${g} 克。`,
+      egg_fried: `建议按2个煎蛋（约${cap}克）搭配其他蛋白来源，别硬凑到 ${g} 克。`,
+      milk: `建议按1到2盒纯牛奶（约${cap}毫升）作为搭配，别把牛奶硬算到 ${g} 毫升。`,
+      yogurt: `建议按1大杯无糖酸奶（约${cap}毫升）作为搭配，别硬凑到 ${g} 毫升。`,
+    };
+    return { grams: cap, text: baseText[food.id] };
+  }
   const rules = {
     rice: g <= 90 ? `约小半碗（约${g}克）` : g <= 140 ? `约1小碗（约${g}克）` : g <= 190 ? `约1大碗或1.5小碗（约${g}克）` : `约2小碗以内（约${g}克）`,
     noodle: g <= 150 ? `约小半碗面（约${g}克）` : g <= 240 ? `约1碗面（约${g}克）` : `约1大碗面（约${g}克）`,
