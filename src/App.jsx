@@ -149,22 +149,6 @@ function formatLifestyleUnit(food, grams) { if (!grams || grams <= 0 || !food.un
 function practicalPortion(food, grams) {
   if (!food || !grams || grams <= 0) return { grams: null, text: "—" };
   const g = Math.round(grams);
-  const cappedPortions = {
-    egg_boiled: 150,
-    egg_fried: 110,
-    milk: 500,
-    yogurt: 350,
-  };
-  if (cappedPortions[food.id] && g > cappedPortions[food.id]) {
-    const cap = cappedPortions[food.id];
-    const baseText = {
-      egg_boiled: `建议按2到3个水煮蛋（约${cap}克）搭配其他蛋白来源，别硬凑到 ${g} 克。`,
-      egg_fried: `建议按2个煎蛋（约${cap}克）搭配其他蛋白来源，别硬凑到 ${g} 克。`,
-      milk: `建议按1到2盒纯牛奶（约${cap}毫升）作为搭配，别把牛奶硬算到 ${g} 毫升。`,
-      yogurt: `建议按1大杯无糖酸奶（约${cap}毫升）作为搭配，别硬凑到 ${g} 毫升。`,
-    };
-    return { grams: cap, text: baseText[food.id] };
-  }
   const rules = {
     rice: g <= 90 ? `约小半碗（约${g}克）` : g <= 140 ? `约1小碗（约${g}克）` : g <= 190 ? `约1大碗或1.5小碗（约${g}克）` : `约2小碗以内（约${g}克）`,
     noodle: g <= 150 ? `约小半碗面（约${g}克）` : g <= 240 ? `约1碗面（约${g}克）` : `约1大碗面（约${g}克）`,
@@ -193,6 +177,48 @@ function practicalPortion(food, grams) {
   };
   return { grams: g, text: rules[food.id] || `${formatLifestyleUnit(food, grams)}（约${g}克）` };
 }
+function buildMealItems(dish, targets) {
+  const carbFood = foods.find((food) => food.id === dish.carbFoodId);
+  const proteinFood = foods.find((food) => food.id === dish.proteinFoodId);
+  const supportMap = {
+    breakfast: ["egg_boiled", "milk", "yogurt", "bread"],
+    lunch: ["egg_tomato", "tofu", "milk"],
+    dinner: ["egg_tomato", "tofu", "yogurt"],
+    snack: ["milk", "yogurt", "egg_boiled", "bread"],
+  };
+  const supportIds = (supportMap[dish.meal] || []).filter((id) => id !== dish.carbFoodId && id !== dish.proteinFoodId);
+  const supportFoods = supportIds.map((id) => foods.find((food) => food.id === id)).filter(Boolean);
+  const items = [];
+
+  const carbTarget = Math.max(Number(targets.carbs) || 0, 0);
+  const proteinTarget = Math.max(Number(targets.protein) || 0, 0);
+  const mainCarbTarget = supportFoods.length ? carbTarget * 0.72 : carbTarget * 0.85;
+  const mainProteinTarget = supportFoods.length ? proteinTarget * 0.62 : proteinTarget * 0.82;
+
+  if (carbFood && mainCarbTarget > 0) {
+    items.push({ name: carbFood.name, text: practicalPortion(carbFood, gramsFor(carbFood, "carbs", mainCarbTarget)).text });
+  }
+  if (proteinFood && mainProteinTarget > 0) {
+    items.push({ name: proteinFood.name, text: practicalPortion(proteinFood, gramsFor(proteinFood, "protein", mainProteinTarget)).text });
+  }
+
+  let remainCarbs = Math.max(carbTarget - mainCarbTarget, 0);
+  let remainProtein = Math.max(proteinTarget - mainProteinTarget, 0);
+
+  supportFoods.slice(0, 2).forEach((food, index) => {
+    const last = index === Math.min(supportFoods.length, 2) - 1;
+    const useProtein = food.protein >= food.carbs;
+    const macro = useProtein ? "protein" : "carbs";
+    const target = useProtein ? (last ? remainProtein : remainProtein * 0.65) : (last ? remainCarbs : remainCarbs * 0.65);
+    if (target <= 0) return;
+    items.push({ name: food.name, text: practicalPortion(food, gramsFor(food, macro, target)).text });
+    if (useProtein) remainProtein = Math.max(remainProtein - target, 0);
+    else remainCarbs = Math.max(remainCarbs - target, 0);
+  });
+
+  return items.filter((item, index, arr) => item.text !== "—" && arr.findIndex((x) => x.name === item.name) === index).slice(0, 4);
+}
+
 function scoreDish(dish, preferences, historyCounts) { const dishName = dish.name; const foodIds = [dish.carbFoodId, dish.proteinFoodId].filter(Boolean); if (preferences.dislikedDishes.includes(dishName)) return -999; if (foodIds.some((id) => preferences.avoidFoods.includes(id))) return -999; let score = 0; if (preferences.favoriteDishes.includes(dishName)) score += 4; if (foodIds.some((id) => preferences.favoriteFoods.includes(id))) score += 3; if (preferences.preferredScenes.includes(dish.scene)) score += 2; score += (historyCounts[dishName] || 0) * 0.8; return score; }
 function getDishRecommendations({ mealId, scene, preferences, historyCounts, limit = 6, offset = 0 }) { return dishLibrary.filter((dish) => dish.meal === mealId && (!scene || dish.scene === scene)).map((dish) => ({ ...dish, score: scoreDish(dish, preferences, historyCounts) })).filter((dish) => dish.score > -999).sort((a, b) => b.score - a.score).slice(offset, offset + limit); }
 function buildTodayProgress(plans, chosenMealIds) { const mealKeys = ["breakfast", "lunch", "dinner", "snack"]; const planned = mealKeys.filter((meal) => plans[meal]).length; const completed = mealKeys.filter((meal) => chosenMealIds.includes(meal)).length; return { planned, completed, remaining: Math.max(planned - completed, 0) }; }
@@ -269,7 +295,7 @@ function MealFlowModal({ open, onClose, mealMode, ratios, nutrition, preferences
   const maxBatch = Math.max(Math.ceil(allRecommendations.length / 6) - 1, 0);
   function changeMeal(mealId) { setSelectedMeal(mealId); setBatch(0); }
   function changeScene(sceneId) { setSelectedScene(sceneId); setBatch(0); }
-  return <Modal open={open} title="开始一餐" onClose={onClose}><div className="space-y-5"><SectionTitle title="需要的时候再帮你一把" desc="这次不只给更像真实菜名的方案，也支持你一键换一批。" /><div className="flex flex-wrap gap-2">{meals.map((meal) => <MiniButton key={meal.id} active={selectedMeal === meal.id} onClick={() => changeMeal(meal.id)}>{meal.name}</MiniButton>)}</div><div className="flex flex-wrap gap-2">{[{ id: "home", name: "家里" }, { id: "takeout", name: "外卖" }, { id: "convenience", name: "便利店" }].map((scene) => <MiniButton key={scene.id} active={selectedScene === scene.id} onClick={() => changeScene(scene.id)}>{scene.name}</MiniButton>)}{allRecommendations.length > 6 ? <button className="rounded-2xl bg-amber-100 px-4 py-3 text-sm font-medium text-amber-900" onClick={() => setBatch(batch >= maxBatch ? 0 : batch + 1)}>换一批</button> : null}</div><CardShell><div className="p-5"><div className="flex items-center justify-between gap-3"><div><div className="text-lg font-semibold text-slate-900">{activeMeal?.name} 建议</div><div className="mt-1 text-sm text-slate-500">按你预设的 {ratioPercent}% 比例和偏好生成</div></div><Badge tone="green">{allRecommendations.length} 个候选</Badge></div><div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4"><MacroPill label="热量" value={round(targets.kcal)} suffix=" kcal" /><MacroPill label="碳水" value={round(targets.carbs)} suffix="g" /><MacroPill label="蛋白" value={round(targets.protein)} suffix="g" /><MacroPill label="脂肪上限" value={round(targets.fat)} suffix="g" /></div></div></CardShell><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{recommendations.map((dish) => { const carbFood = foods.find((food) => food.id === dish.carbFoodId); const proteinFood = foods.find((food) => food.id === dish.proteinFoodId); const carbGrams = gramsFor(carbFood, "carbs", targets.carbs); const proteinGrams = gramsFor(proteinFood, "protein", targets.protein); return <CardShell key={dish.id}><div className="p-5"><div className="flex items-center justify-between gap-2"><div className="font-semibold text-slate-900">{dish.name}</div><Badge tone="amber">{dish.category}</Badge></div><div className="mt-2 text-sm text-slate-600">{dish.note}</div><div className="mt-3 space-y-2 text-sm text-slate-700"><div>{carbFood?.name}：{practicalPortion(carbFood, carbGrams).text}</div><div>{proteinFood?.name}：{practicalPortion(proteinFood, proteinGrams).text}</div></div><div className="mt-4 flex flex-wrap gap-2">{dish.tags.map((tag) => <span key={tag} className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{tag}</span>)}</div><button className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white" onClick={() => onCompleteMeal(selectedMeal, dish.name)}>这餐我就按这个吃</button></div></CardShell>; })}</div></div></Modal>;
+  return <Modal open={open} title="开始一餐" onClose={onClose}><div className="space-y-5"><SectionTitle title="需要的时候再帮你一把" desc="这次不只给更像真实菜名的方案，也支持你一键换一批。" /><div className="flex flex-wrap gap-2">{meals.map((meal) => <MiniButton key={meal.id} active={selectedMeal === meal.id} onClick={() => changeMeal(meal.id)}>{meal.name}</MiniButton>)}</div><div className="flex flex-wrap gap-2">{[{ id: "home", name: "家里" }, { id: "takeout", name: "外卖" }, { id: "convenience", name: "便利店" }].map((scene) => <MiniButton key={scene.id} active={selectedScene === scene.id} onClick={() => changeScene(scene.id)}>{scene.name}</MiniButton>)}{allRecommendations.length > 6 ? <button className="rounded-2xl bg-amber-100 px-4 py-3 text-sm font-medium text-amber-900" onClick={() => setBatch(batch >= maxBatch ? 0 : batch + 1)}>换一批</button> : null}</div><CardShell><div className="p-5"><div className="flex items-center justify-between gap-3"><div><div className="text-lg font-semibold text-slate-900">{activeMeal?.name} 建议</div><div className="mt-1 text-sm text-slate-500">按你预设的 {ratioPercent}% 比例和偏好生成</div></div><Badge tone="green">{allRecommendations.length} 个候选</Badge></div><div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4"><MacroPill label="热量" value={round(targets.kcal)} suffix=" kcal" /><MacroPill label="碳水" value={round(targets.carbs)} suffix="g" /><MacroPill label="蛋白" value={round(targets.protein)} suffix="g" /><MacroPill label="脂肪上限" value={round(targets.fat)} suffix="g" /></div></div></CardShell><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{recommendations.map((dish) => { const mealItems = buildMealItems(dish, targets); return <CardShell key={dish.id}><div className="p-5"><div className="flex items-center justify-between gap-2"><div className="font-semibold text-slate-900">{dish.name}</div><Badge tone="amber">{dish.category}</Badge></div><div className="mt-2 text-sm text-slate-600">{dish.note}</div><div className="mt-3 space-y-2 text-sm text-slate-700">{mealItems.map((item) => <div key={item.name}>{item.name}：{item.text}</div>)}</div><div className="mt-4 flex flex-wrap gap-2">{dish.tags.map((tag) => <span key={tag} className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{tag}</span>)}</div><button className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white" onClick={() => onCompleteMeal(selectedMeal, dish.name)}>这餐我就按这个吃</button></div></CardShell>; })}</div></div></Modal>;
 }
 
 function FixPage() { return <div className="space-y-5"><CardShell><div className="p-5"><SectionTitle title="超了怎么修" desc="把纠偏也做成主入口，不让用户翻一堆资料。" /><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">{correctionRules.map((item) => <div key={item.title} className="rounded-2xl bg-slate-50 p-4"><div className="font-semibold text-slate-900">{item.title}</div><div className="mt-2 text-sm text-slate-600">{item.desc}</div></div>)}</div></div></CardShell></div>; }
