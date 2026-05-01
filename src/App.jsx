@@ -132,6 +132,13 @@ function saveStoredProfile(profile) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
 }
 
+function getDateKey(offset = 0) {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + offset);
+  return date.toISOString().slice(0, 10);
+}
+
 function round(n, digits = 0) { const p = Math.pow(10, digits); return Math.round((Number(n) || 0) * p) / p; }
 function nearlyEqual(actual, expected, tolerance = 0.5) { return Math.abs(actual - expected) <= tolerance; }
 function bmr({ sex, weight, height, age }) { const safeWeight = Math.max(Number(weight) || 0, 0); const safeHeight = Math.max(Number(height) || 0, 0); const safeAge = Math.max(Number(age) || 0, 0); const base = 10 * safeWeight + 6.25 * safeHeight - 5 * safeAge; return sex === "male" ? base + 5 : base - 161; }
