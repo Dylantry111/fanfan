@@ -32,43 +32,162 @@ const foods = [
 
 
 const foodMeta = {
-  rice: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.86, secondaryMacro: "protein", secondaryRatio: 0.08 },
-  noodle: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.72, secondaryMacro: "protein", secondaryRatio: 0.12 },
-  mantou: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.84, secondaryMacro: "protein", secondaryRatio: 0.13 },
-  bread: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.69, secondaryMacro: "protein", secondaryRatio: 0.16 },
-  oats: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.63, secondaryMacro: "protein", secondaryRatio: 0.14 },
-  sweet_potato: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.82, secondaryMacro: "protein", secondaryRatio: 0.07 },
-  corn: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.7, secondaryMacro: "protein", secondaryRatio: 0.11 },
-  porridge: { role: "staple", form: "light", primaryMacro: "carbs", primaryRatio: 0.88, secondaryMacro: "protein", secondaryRatio: 0.09 },
-  dumpling: { role: "dish", form: "solid", primaryMacro: "carbs", primaryRatio: 0.51, secondaryMacro: "protein", secondaryRatio: 0.15 },
-  baozi: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.6, secondaryMacro: "protein", secondaryRatio: 0.12 },
-  rice_noodle: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.87, secondaryMacro: "protein", secondaryRatio: 0.1 },
-  chicken: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.75, secondaryMacro: "fat", secondaryRatio: 0.2 },
-  chicken_leg: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.5, secondaryMacro: "fat", secondaryRatio: 0.47 },
-  beef: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.42, secondaryMacro: "fat", secondaryRatio: 0.54 },
-  fish: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.8, secondaryMacro: "fat", secondaryRatio: 0.16 },
-  shrimp: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.8, secondaryMacro: "fat", secondaryRatio: 0.09 },
-  egg_boiled: { role: "protein", form: "single", primaryMacro: "protein", primaryRatio: 0.34, secondaryMacro: "fat", secondaryRatio: 0.58 },
-  egg_steamed: { role: "dish", form: "soft", primaryMacro: "protein", primaryRatio: 0.36, secondaryMacro: "fat", secondaryRatio: 0.54 },
-  egg_fried: { role: "protein", form: "single", primaryMacro: "protein", primaryRatio: 0.27, secondaryMacro: "fat", secondaryRatio: 0.6 },
-  egg_tomato: { role: "dish", form: "dish", primaryMacro: "protein", primaryRatio: 0.28, secondaryMacro: "fat", secondaryRatio: 0.56 },
-  tofu: { role: "dish", form: "soft", primaryMacro: "protein", primaryRatio: 0.4, secondaryMacro: "fat", secondaryRatio: 0.54 },
-  milk: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.33 },
-  yogurt: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.34 },
-  pork: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.51, secondaryMacro: "fat", secondaryRatio: 0.45 },
+  rice: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.86, secondaryMacro: "protein", secondaryRatio: 0.08, groups: ["staple", "grain", "main_carb"], suitableMeals: ["lunch", "dinner"], satiety: 0.7 },
+  noodle: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.72, secondaryMacro: "protein", secondaryRatio: 0.12, groups: ["staple", "grain", "main_carb"], suitableMeals: ["breakfast", "lunch", "dinner"], satiety: 0.62 },
+  mantou: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.84, secondaryMacro: "protein", secondaryRatio: 0.13, groups: ["staple", "grain", "main_carb"], suitableMeals: ["breakfast", "lunch"], satiety: 0.68 },
+  bread: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.69, secondaryMacro: "protein", secondaryRatio: 0.16, groups: ["staple", "grain", "main_carb", "convenience"], suitableMeals: ["breakfast", "snack", "dinner"], satiety: 0.58 },
+  oats: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.63, secondaryMacro: "protein", secondaryRatio: 0.14, groups: ["staple", "whole_grain", "main_carb"], suitableMeals: ["breakfast", "snack"], satiety: 0.88 },
+  sweet_potato: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.82, secondaryMacro: "protein", secondaryRatio: 0.07, groups: ["staple", "tuber", "main_carb"], suitableMeals: ["lunch", "dinner"], satiety: 0.86 },
+  corn: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.7, secondaryMacro: "protein", secondaryRatio: 0.11, groups: ["staple", "whole_grain", "light_carb"], suitableMeals: ["breakfast", "snack", "dinner"], satiety: 0.8 },
+  porridge: { role: "staple", form: "light", primaryMacro: "carbs", primaryRatio: 0.88, secondaryMacro: "protein", secondaryRatio: 0.09, groups: ["staple", "grain", "light_carb"], suitableMeals: ["breakfast", "dinner"], satiety: 0.42 },
+  dumpling: { role: "dish", form: "solid", primaryMacro: "carbs", primaryRatio: 0.51, secondaryMacro: "protein", secondaryRatio: 0.15, groups: ["mixed_meal", "main_carb"], suitableMeals: ["breakfast", "lunch", "snack"], satiety: 0.7 },
+  baozi: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.6, secondaryMacro: "protein", secondaryRatio: 0.12, groups: ["staple", "mixed_carb"], suitableMeals: ["breakfast", "snack"], satiety: 0.64 },
+  rice_noodle: { role: "staple", form: "solid", primaryMacro: "carbs", primaryRatio: 0.87, secondaryMacro: "protein", secondaryRatio: 0.1, groups: ["staple", "grain", "main_carb"], suitableMeals: ["breakfast", "lunch", "dinner"], satiety: 0.57 },
+  chicken: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.75, secondaryMacro: "fat", secondaryRatio: 0.2, groups: ["protein", "lean_protein", "main_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.9 },
+  chicken_leg: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.5, secondaryMacro: "fat", secondaryRatio: 0.47, groups: ["protein", "animal_protein", "main_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.84 },
+  beef: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.42, secondaryMacro: "fat", secondaryRatio: 0.54, groups: ["protein", "animal_protein", "main_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.82 },
+  fish: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.8, secondaryMacro: "fat", secondaryRatio: 0.16, groups: ["protein", "lean_protein", "main_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.88 },
+  shrimp: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.8, secondaryMacro: "fat", secondaryRatio: 0.09, groups: ["protein", "lean_protein", "main_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.84 },
+  egg_boiled: { role: "protein", form: "single", primaryMacro: "protein", primaryRatio: 0.34, secondaryMacro: "fat", secondaryRatio: 0.58, groups: ["protein", "egg", "support_protein"], suitableMeals: ["breakfast", "snack", "lunch", "dinner"], satiety: 0.75 },
+  egg_steamed: { role: "dish", form: "soft", primaryMacro: "protein", primaryRatio: 0.36, secondaryMacro: "fat", secondaryRatio: 0.54, groups: ["protein", "egg", "support_protein"], suitableMeals: ["breakfast", "dinner"], satiety: 0.68 },
+  egg_fried: { role: "protein", form: "single", primaryMacro: "protein", primaryRatio: 0.27, secondaryMacro: "fat", secondaryRatio: 0.6, groups: ["protein", "egg", "support_protein"], suitableMeals: ["breakfast", "dinner"], satiety: 0.7 },
+  egg_tomato: { role: "dish", form: "dish", primaryMacro: "protein", primaryRatio: 0.28, secondaryMacro: "fat", secondaryRatio: 0.56, groups: ["protein", "mixed_dish", "support_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.66 },
+  tofu: { role: "dish", form: "soft", primaryMacro: "protein", primaryRatio: 0.4, secondaryMacro: "fat", secondaryRatio: 0.54, groups: ["protein", "plant_protein", "support_protein"], suitableMeals: ["breakfast", "lunch", "dinner"], satiety: 0.72 },
+  milk: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.33, groups: ["dairy", "drink_protein", "support_protein"], suitableMeals: ["breakfast", "snack"], satiety: 0.5 },
+  yogurt: { role: "drink", form: "drink", primaryMacro: "protein", primaryRatio: 0.23, secondaryMacro: "carbs", secondaryRatio: 0.34, groups: ["dairy", "drink_protein", "support_protein"], suitableMeals: ["breakfast", "snack", "dinner"], satiety: 0.62 },
+  pork: { role: "protein", form: "dish", primaryMacro: "protein", primaryRatio: 0.51, secondaryMacro: "fat", secondaryRatio: 0.45, groups: ["protein", "animal_protein", "main_protein"], suitableMeals: ["lunch", "dinner"], satiety: 0.8 },
+};
+
+const mealCompositionRules = {
+  breakfast: {
+    carbFloor: 0.7,
+    proteinFloor: 0.8,
+    maxItems: 3,
+    allowDrinkSupplement: true,
+    preferredSupportOrder: ["protein", "drink"],
+    disallowDrinkPair: true,
+    disallowSecondStaple: true,
+  },
+  lunch: {
+    carbFloor: 0.85,
+    proteinFloor: 0.9,
+    maxItems: 3,
+    allowDrinkSupplement: false,
+    preferredSupportOrder: ["dish"],
+    disallowDrinkPair: true,
+    disallowSecondStaple: true,
+  },
+  dinner: {
+    carbFloor: 0.75,
+    proteinFloor: 0.9,
+    maxItems: 3,
+    allowDrinkSupplement: false,
+    preferredSupportOrder: ["dish"],
+    disallowDrinkPair: true,
+    disallowSecondStaple: true,
+  },
+  snack: {
+    carbFloor: 0.45,
+    proteinFloor: 0.75,
+    maxItems: 2,
+    allowDrinkSupplement: true,
+    preferredSupportOrder: ["protein", "drink"],
+    disallowDrinkPair: true,
+    disallowSecondStaple: true,
+  },
 };
 
 function getFoodMeta(food) {
-  return foodMeta[food?.id] || { role: food?.type === "carb" ? "staple" : "protein", form: "solid", primaryMacro: food?.type === "carb" ? "carbs" : "protein", primaryRatio: 0.7, secondaryMacro: food?.type === "carb" ? "protein" : "fat", secondaryRatio: 0.15 };
+  return foodMeta[food?.id] || { role: food?.type === "carb" ? "staple" : "protein", form: "solid", primaryMacro: food?.type === "carb" ? "carbs" : "protein", primaryRatio: 0.7, secondaryMacro: food?.type === "carb" ? "protein" : "fat", secondaryRatio: 0.15, groups: [food?.type === "carb" ? "staple" : "protein"], suitableMeals: ["breakfast", "lunch", "dinner", "snack"], satiety: 0.6 };
+}
+
+function hasFoodGroup(food, group) {
+  return getFoodMeta(food).groups?.includes(group);
+}
+
+function getDishFoods(dish) {
+  return {
+    carbFood: foods.find((food) => food.id === dish.carbFoodId) || null,
+    proteinFood: foods.find((food) => food.id === dish.proteinFoodId) || null,
+  };
+}
+
+function scoreMealCombination(dish) {
+  const { carbFood, proteinFood } = getDishFoods(dish);
+  const mealRule = mealCompositionRules[dish.meal] || mealCompositionRules.lunch;
+  let score = 0;
+
+  if (!carbFood || !proteinFood) return -999;
+
+  const carbMeta = getFoodMeta(carbFood);
+  const proteinMeta = getFoodMeta(proteinFood);
+
+  if (carbMeta.suitableMeals?.includes(dish.meal)) score += 2;
+  else score -= 3;
+
+  if (proteinMeta.suitableMeals?.includes(dish.meal)) score += 2;
+  else score -= 3;
+
+  if (hasFoodGroup(carbFood, "whole_grain")) score += 1.5;
+  if (hasFoodGroup(carbFood, "light_carb") && dish.meal === "breakfast") score -= 0.5;
+  if (carbFood.id === "porridge" && dish.meal !== "breakfast") score -= 1.5;
+  if (carbFood.id === "bread" && dish.meal === "dinner") score -= 0.8;
+
+  if (hasFoodGroup(proteinFood, "main_protein")) score += 2.5;
+  if (hasFoodGroup(proteinFood, "support_protein") && ["lunch", "dinner"].includes(dish.meal)) score -= 1.5;
+  if (hasFoodGroup(proteinFood, "dairy") && dish.meal === "snack") score += 1.2;
+  if (hasFoodGroup(proteinFood, "dairy") && ["lunch", "dinner"].includes(dish.meal)) score -= 1.2;
+
+  const proteinDensity = proteinFood.protein || 0;
+  if (dish.meal === "breakfast" && proteinDensity >= 8) score += 1.5;
+  if (["lunch", "dinner"].includes(dish.meal) && proteinDensity >= 20) score += 2;
+  if (["lunch", "dinner"].includes(dish.meal) && proteinDensity < 10) score -= 2;
+
+  if (mealRule.disallowDrinkPair && proteinMeta.role === "drink" && hasFoodGroup(carbFood, "light_carb")) score -= 0.8;
+  score += (carbMeta.satiety || 0.6) * 1.5;
+  score += (proteinMeta.satiety || 0.6) * 1.2;
+
+  return round(score, 2);
+}
+
+function getMealRule(mealId) {
+  return mealCompositionRules[mealId] || mealCompositionRules.lunch;
+}
+
+function isDrinkFood(food) {
+  return getFoodMeta(food).role === "drink";
+}
+
+function isStapleFood(food) {
+  return ["staple", "dish"].includes(getFoodMeta(food).role) && food?.type === "carb";
+}
+
+function isPrimaryProteinFood(food) {
+  const meta = getFoodMeta(food);
+  return (meta.role === "protein" || meta.role === "dish" || meta.role === "drink") && food?.protein >= 8;
+}
+
+function getProteinSupportCandidates(mealId, carbFood, proteinFood) {
+  const carbId = carbFood?.id;
+  const proteinId = proteinFood?.id;
+  const breakfastCandidates = ["egg_boiled", "milk", "yogurt", "tofu"];
+  const snackCandidates = ["egg_boiled", "milk", "yogurt"];
+  const mealCandidates = ["egg_boiled", "tofu", "milk", "yogurt"];
+  const base = mealId === "breakfast" ? breakfastCandidates : mealId === "snack" ? snackCandidates : mealCandidates;
+  return base.filter((id) => id !== carbId && id !== proteinId);
+}
+
+function getSupportFoodById(id) {
+  return foods.find((food) => food.id === id) || null;
 }
 
 const dishLibrary = [
   { id: "breakfast-oats-egg", meal: "breakfast", scene: "home", category: "家常早餐", name: "燕麦鸡蛋早餐杯", tags: ["早餐", "家里", "高蛋白"], carbFoodId: "oats", proteinFoodId: "egg_boiled", note: "很稳，适合早上不想想太多的时候。" },
-  { id: "breakfast-bread-yogurt", meal: "breakfast", scene: "convenience", category: "便利店早餐", name: "全麦吐司 + 无糖酸奶", tags: ["早餐", "便利店", "快选"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "上班路上最容易落地的一种组合。" },
-  { id: "breakfast-porridge-egg", meal: "breakfast", scene: "home", category: "中式早餐", name: "白粥鸡蛋小菜版", tags: ["早餐", "家里", "中式"], carbFoodId: "porridge", proteinFoodId: "egg_boiled", note: "适合习惯中式早餐的人。" },
-  { id: "breakfast-baozi-milk", meal: "breakfast", scene: "takeout", category: "中式早餐", name: "肉包 + 纯牛奶", tags: ["早餐", "外卖", "快手"], carbFoodId: "baozi", proteinFoodId: "milk", note: "比只吃包子更稳，至少把蛋白补上一点。" },
-  { id: "breakfast-corn-yogurt", meal: "breakfast", scene: "convenience", category: "便利店早餐", name: "玉米 + 酸奶", tags: ["早餐", "便利店", "轻负担"], carbFoodId: "corn", proteinFoodId: "yogurt", note: "适合想吃得轻一点的早上。" },
-  { id: "breakfast-mantou-egg", meal: "breakfast", scene: "home", category: "中式早餐", name: "馒头鸡蛋牛奶组合", tags: ["早餐", "家里", "饱腹"], carbFoodId: "mantou", proteinFoodId: "egg_boiled", note: "传统早餐里比较容易执行的组合。" },
+  { id: "breakfast-bread-yogurt", meal: "breakfast", scene: "convenience", category: "便利店早餐", name: "全麦吐司 + 无糖酸奶 + 水煮蛋", tags: ["早餐", "便利店", "快选"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "参考常见健康早餐结构，保留主食和奶类，同时补一个更稳的蛋白。" },
+  { id: "breakfast-porridge-egg", meal: "breakfast", scene: "home", category: "中式早餐", name: "白粥 + 鸡蛋", tags: ["早餐", "家里", "中式"], carbFoodId: "porridge", proteinFoodId: "egg_boiled", note: "白粥饱腹偏弱，所以只保留一份明确蛋白，不再叠奶类。" },
+  { id: "breakfast-baozi-milk", meal: "breakfast", scene: "takeout", category: "中式早餐", name: "肉包 + 纯牛奶 + 水煮蛋", tags: ["早餐", "外卖", "快手"], carbFoodId: "baozi", proteinFoodId: "milk", note: "包子能量够，但蛋白偏弱，所以优先补鸡蛋而不是再补第二主食。" },
+  { id: "breakfast-corn-yogurt", meal: "breakfast", scene: "convenience", category: "便利店早餐", name: "玉米 + 酸奶 + 水煮蛋", tags: ["早餐", "便利店", "轻负担"], carbFoodId: "corn", proteinFoodId: "yogurt", note: "轻早餐也尽量补足蛋白，不只停留在玉米加奶类。" },
+  { id: "breakfast-mantou-egg", meal: "breakfast", scene: "home", category: "中式早餐", name: "馒头 + 鸡蛋", tags: ["早餐", "家里", "饱腹"], carbFoodId: "mantou", proteinFoodId: "egg_boiled", note: "保留经典搭配，若需要再补奶类由算法按蛋白缺口决定。" },
   { id: "breakfast-rice-noodle-egg", meal: "breakfast", scene: "takeout", category: "粉面早餐", name: "清汤米粉加蛋", tags: ["早餐", "外卖", "热乎"], carbFoodId: "rice_noodle", proteinFoodId: "egg_boiled", note: "适合想吃热食、但又不想太油的早上。" },
   { id: "breakfast-dumpling-milk", meal: "breakfast", scene: "home", category: "中式早餐", name: "早餐饺子 + 纯牛奶", tags: ["早餐", "家里", "满足感"], carbFoodId: "dumpling", proteinFoodId: "milk", note: "偶尔想吃得扎实一点时可以这样配。" },
 
@@ -90,14 +209,14 @@ const dishLibrary = [
   { id: "dinner-tofu-porridge", meal: "dinner", scene: "home", category: "家常晚餐", name: "豆腐白粥青菜版", tags: ["晚餐", "家里", "清淡"], carbFoodId: "porridge", proteinFoodId: "tofu", note: "适合胃口一般、但又想吃点热乎的情况。" },
   { id: "dinner-beef-noodle", meal: "dinner", scene: "takeout", category: "粉面类", name: "牛肉面减面版", tags: ["晚餐", "外卖", "满足感"], carbFoodId: "noodle", proteinFoodId: "beef", note: "如果晚餐想吃得有满足感，可以从减面量开始。" },
   { id: "dinner-pork-corn", meal: "dinner", scene: "takeout", category: "轻晚餐", name: "瘦肉玉米蔬菜盘", tags: ["晚餐", "外卖", "家常"], carbFoodId: "corn", proteinFoodId: "pork", note: "适合不想吃米饭、想换点口感的时候。" },
-  { id: "dinner-egg-bread", meal: "dinner", scene: "convenience", category: "便利店简餐", name: "煎蛋全麦面包酸奶组合", tags: ["晚餐", "便利店", "临时"], carbFoodId: "bread", proteinFoodId: "egg_fried", note: "加班晚归时比随便乱买要稳得多。" },
+  { id: "dinner-egg-bread", meal: "dinner", scene: "convenience", category: "便利店简餐", name: "鸡蛋 + 全麦面包 + 无糖酸奶", tags: ["晚餐", "便利店", "临时"], carbFoodId: "bread", proteinFoodId: "egg_fried", note: "便利店晚餐优先保留一份主食、一份蛋白，再用酸奶做轻补充。" },
   { id: "dinner-rice-noodle-fish", meal: "dinner", scene: "takeout", category: "粉面类", name: "鱼片米粉减粉版", tags: ["晚餐", "外卖", "热乎"], carbFoodId: "rice_noodle", proteinFoodId: "fish", note: "更接近真实夜间外卖里常点的那类东西。" },
   { id: "dinner-shrimp-fried-rice-lite", meal: "dinner", scene: "takeout", category: "盖饭类", name: "虾仁炒饭减量版", tags: ["晚餐", "外卖", "满足感"], carbFoodId: "rice", proteinFoodId: "shrimp", note: "如果想吃炒饭，可以直接把份量和配菜策略带进去。" },
   { id: "dinner-chicken-bento", meal: "dinner", scene: "convenience", category: "便利店简餐", name: "鸡胸便当晚餐版", tags: ["晚餐", "便利店", "快选"], carbFoodId: "rice", proteinFoodId: "chicken", note: "适合晚归、懒得再想的一餐。" },
 
-  { id: "snack-yogurt", meal: "snack", scene: "convenience", category: "加餐", name: "无糖酸奶 + 牛奶", tags: ["加餐", "便利店", "补蛋白"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "更适合临时垫一下，不容易失控。" },
-  { id: "snack-milk-egg", meal: "snack", scene: "home", category: "加餐", name: "牛奶 + 水煮蛋", tags: ["加餐", "家里", "简单"], carbFoodId: "bread", proteinFoodId: "milk", note: "如果只是有点饿，不需要上完整正餐。" },
-  { id: "snack-corn-yogurt", meal: "snack", scene: "convenience", category: "加餐", name: "玉米 + 酸奶", tags: ["加餐", "便利店", "饱腹"], carbFoodId: "corn", proteinFoodId: "yogurt", note: "适合想垫一口，但又怕后面失控的人。" },
+  { id: "snack-yogurt", meal: "snack", scene: "convenience", category: "加餐", name: "无糖酸奶", tags: ["加餐", "便利店", "补蛋白"], carbFoodId: "bread", proteinFoodId: "yogurt", note: "加餐先轻量，优先单一奶类或再加一个鸡蛋，不做双奶叠加。" },
+  { id: "snack-milk-egg", meal: "snack", scene: "home", category: "加餐", name: "牛奶 + 水煮蛋", tags: ["加餐", "家里", "简单"], carbFoodId: "bread", proteinFoodId: "milk", note: "更适合真饿了但又不想上正餐的时候。" },
+  { id: "snack-corn-yogurt", meal: "snack", scene: "convenience", category: "加餐", name: "玉米 + 酸奶", tags: ["加餐", "便利店", "饱腹"], carbFoodId: "corn", proteinFoodId: "yogurt", note: "保留轻主食 + 奶类的结构，但不再自动叠第二奶类。" },
   { id: "snack-dumpling-lite", meal: "snack", scene: "home", category: "加餐", name: "少量饺子 + 热饮", tags: ["加餐", "家里", "满足感"], carbFoodId: "dumpling", proteinFoodId: "egg_boiled", note: "偶尔嘴馋时，比直接开大餐更可控。" },
 ];
 
@@ -188,7 +307,7 @@ function practicalPortion(food, grams) {
     bread: g <= 40 ? `约1片（约${g}克）` : g <= 75 ? `约2片（约${g}克）` : `约3片以内（约${g}克）`,
     sweet_potato: g <= 220 ? `约1个中等红薯（约${g}克）` : `约1个大红薯（约${g}克）`,
     corn: g <= 200 ? `约1根玉米（约${g}克）` : `约1根大玉米（约${g}克）`,
-    porridge: g <= 250 ? `约1碗白粥（约${g}克）` : `约1大碗白粥（约${g}克）`,
+    porridge: g <= 250 ? `约1碗白粥（约${g}克）` : g <= 380 ? `约1大碗白粥（约${g}克）` : `约1大碗白粥 + 明确蛋白搭配（约${g}克）`,
     dumpling: g <= 150 ? `约6个饺子（约${g}克）` : `约8个饺子（约${g}克）`,
     baozi: g <= 120 ? `约1个包子（约${g}克）` : `约2个包子以内（约${g}克）`,
     mantou: g <= 100 ? `约1个馒头（约${g}克）` : `约1个半馒头（约${g}克）`,
@@ -204,64 +323,76 @@ function practicalPortion(food, grams) {
     egg_steamed: g <= 120 ? `约1小碗鸡蛋羹（约${g}克）` : `约1大碗鸡蛋羹（约${g}克）`,
     egg_fried: g <= 60 ? `约1个煎蛋（约${g}克）` : `约2个煎蛋（约${g}克）`,
     egg_tomato: g <= 180 ? `约1份西红柿炒鸡蛋（约${g}克）` : `约1大份西红柿炒鸡蛋（约${g}克）`,
-    milk: g <= 300 ? `约1盒纯牛奶（约${g}毫升）` : g <= 550 ? `约2盒纯牛奶（约${g}毫升）` : `约1瓶大纯牛奶（约${g}毫升）`,
-    yogurt: g <= 200 ? `约1杯无糖酸奶（约${g}毫升）` : g <= 350 ? `约1大杯无糖酸奶（约${g}毫升）` : `约2杯无糖酸奶以内（约${g}毫升）`,
+    milk: g <= 300 ? `约1盒纯牛奶（约${g}毫升）` : `约1大盒纯牛奶（约${g}毫升）`,
+    yogurt: g <= 220 ? `约1杯无糖酸奶（约${g}毫升）` : `约1大杯无糖酸奶（约${g}毫升）`,
   };
   return { grams: g, text: rules[food.id] || `${formatLifestyleUnit(food, grams)}（约${g}克）` };
 }
 function buildMealItems(dish, targets) {
   const carbFood = foods.find((food) => food.id === dish.carbFoodId);
   const proteinFood = foods.find((food) => food.id === dish.proteinFoodId);
+  const mealRule = getMealRule(dish.meal);
   const mealTemplates = {
-    breakfast: { stapleShare: 0.55, proteinShare: 0.45, support: ["drink", "protein"] },
-    lunch: { stapleShare: 0.42, proteinShare: 0.58, support: ["dish"] },
-    dinner: { stapleShare: 0.35, proteinShare: 0.65, support: ["dish"] },
-    snack: { stapleShare: 0.4, proteinShare: 0.6, support: ["drink", "protein"] },
+    breakfast: { stapleShare: 0.75, proteinShare: 0.75 },
+    lunch: { stapleShare: 0.88, proteinShare: 0.9 },
+    dinner: { stapleShare: 0.78, proteinShare: 0.92 },
+    snack: { stapleShare: 0.45, proteinShare: 0.75 },
   };
   const template = mealTemplates[dish.meal] || mealTemplates.lunch;
   const items = [];
   const carbTarget = Math.max(Number(targets.carbs) || 0, 0);
   const proteinTarget = Math.max(Number(targets.protein) || 0, 0);
   const used = new Set([dish.carbFoodId, dish.proteinFoodId]);
+  const usedRoles = new Set();
 
   if (carbFood && carbTarget > 0) {
-    items.push({ name: carbFood.name, text: practicalPortion(carbFood, gramsFor(carbFood, "carbs", carbTarget * template.stapleShare)).text, role: getFoodMeta(carbFood).role });
+    const carbMeta = getFoodMeta(carbFood);
+    usedRoles.add(carbMeta.role);
+    items.push({ name: carbFood.name, text: practicalPortion(carbFood, gramsFor(carbFood, "carbs", carbTarget * template.stapleShare)).text, role: carbMeta.role });
   }
   if (proteinFood && proteinTarget > 0) {
-    items.push({ name: proteinFood.name, text: practicalPortion(proteinFood, gramsFor(proteinFood, "protein", proteinTarget * template.proteinShare)).text, role: getFoodMeta(proteinFood).role });
+    const proteinMeta = getFoodMeta(proteinFood);
+    usedRoles.add(proteinMeta.role);
+    items.push({ name: proteinFood.name, text: practicalPortion(proteinFood, "protein" in proteinFood ? gramsFor(proteinFood, "protein", proteinTarget * template.proteinShare) : null).text, role: proteinMeta.role });
   }
 
-  let remainCarbs = Math.max(carbTarget - carbTarget * template.stapleShare, 0);
-  let remainProtein = Math.max(proteinTarget - proteinTarget * template.proteinShare, 0);
+  let coveredCarbs = carbFood ? template.stapleShare : 0;
+  let coveredProtein = proteinFood ? template.proteinShare : 0;
+  const supportCandidates = getProteinSupportCandidates(dish.meal, carbFood, proteinFood);
 
-  template.support.forEach((role) => {
-    const supportFood = foods.find((food) => {
-      if (used.has(food.id)) return false;
-      const meta = getFoodMeta(food);
-      if (meta.role !== role && !(role === "protein" && meta.role === "dish") && !(role === "dish" && meta.role === "protein")) return false;
-      if (dish.meal === "breakfast" && role === "drink") return meta.role === "drink" && food.id !== proteinFood?.id;
-      return true;
-    });
-    if (!supportFood) return;
+  supportCandidates.forEach((id) => {
+    if (items.length >= mealRule.maxItems) return;
+    if (coveredProtein >= mealRule.proteinFloor) return;
+    const supportFood = getSupportFoodById(id);
+    if (!supportFood || used.has(supportFood.id)) return;
+    if (mealRule.disallowDrinkPair && isDrinkFood(proteinFood) && isDrinkFood(supportFood)) return;
+    if (mealRule.disallowSecondStaple && isStapleFood(carbFood) && isStapleFood(supportFood)) return;
+    if (!mealRule.allowDrinkSupplement && isDrinkFood(supportFood)) return;
+
+    const supportProteinTarget = proteinTarget * Math.max(mealRule.proteinFloor - coveredProtein, 0);
+    if (supportProteinTarget <= 0) return;
+    const grams = gramsFor(supportFood, "protein", supportProteinTarget);
+    const portion = practicalPortion(supportFood, grams);
+    if (portion.text === "—") return;
+
+    items.push({ name: supportFood.name, text: portion.text, role: getFoodMeta(supportFood).role });
     used.add(supportFood.id);
-    const meta = getFoodMeta(supportFood);
-    const macro = meta.primaryMacro === "carbs" ? "carbs" : "protein";
-    const target = macro === "carbs" ? remainCarbs : remainProtein;
-    if (target <= 0) return;
-    const share = role === "drink" ? 0.55 : 0.75;
-    const grams = gramsFor(supportFood, macro, target * share);
-    items.push({ name: supportFood.name, text: practicalPortion(supportFood, grams).text, role: meta.role });
-    if (macro === "carbs") remainCarbs = Math.max(remainCarbs - target * share, 0);
-    else remainProtein = Math.max(remainProtein - target * share, 0);
+    usedRoles.add(getFoodMeta(supportFood).role);
+    coveredProtein += Math.min((supportFood.protein || 0) / Math.max(proteinTarget, 1), 0.35);
   });
 
-  return items.filter((item, index, arr) => item.text !== "—" && arr.findIndex((x) => x.name === item.name) === index).slice(0, dish.meal === "breakfast" ? 3 : 4);
+  if (dish.meal === "snack") {
+    const filteredSnackItems = items.filter((item) => item.role !== "staple" || item.name === carbFood?.name);
+    return filteredSnackItems.filter((item, index, arr) => item.text !== "—" && arr.findIndex((x) => x.name === item.name) === index).slice(0, mealRule.maxItems);
+  }
+
+  return items.filter((item, index, arr) => item.text !== "—" && arr.findIndex((x) => x.name === item.name) === index).slice(0, mealRule.maxItems);
 }
 
-function scoreDish(dish, preferences, historyCounts) { const dishName = dish.name; const foodIds = [dish.carbFoodId, dish.proteinFoodId].filter(Boolean); if (preferences.dislikedDishes.includes(dishName)) return -999; if (foodIds.some((id) => preferences.avoidFoods.includes(id))) return -999; let score = 0; if (preferences.favoriteDishes.includes(dishName)) score += 4; if (foodIds.some((id) => preferences.favoriteFoods.includes(id))) score += 3; if (preferences.preferredScenes.includes(dish.scene)) score += 2; score += (historyCounts[dishName] || 0) * 0.8; return score; }
-function getDishRecommendations({ mealId, scene, preferences, historyCounts, limit = 6, offset = 0 }) { return dishLibrary.filter((dish) => dish.meal === mealId && (!scene || dish.scene === scene)).map((dish) => ({ ...dish, score: scoreDish(dish, preferences, historyCounts) })).filter((dish) => dish.score > -999).sort((a, b) => b.score - a.score).slice(offset, offset + limit); }
+function scoreDish(dish, preferences, historyCounts) { const dishName = dish.name; const foodIds = [dish.carbFoodId, dish.proteinFoodId].filter(Boolean); if (preferences.dislikedDishes.includes(dishName)) return -999; if (foodIds.some((id) => preferences.avoidFoods.includes(id))) return -999; let score = scoreMealCombination(dish); if (preferences.favoriteDishes.includes(dishName)) score += 4; if (foodIds.some((id) => preferences.favoriteFoods.includes(id))) score += 3; if (preferences.preferredScenes.includes(dish.scene)) score += 2; score += (historyCounts[dishName] || 0) * 0.8; return score; }
+function getDishRecommendations({ mealId, scene, preferences, historyCounts, limit = 6, offset = 0 }) { return dishLibrary.filter((dish) => dish.meal === mealId && (!scene || dish.scene === scene)).map((dish) => ({ ...dish, score: scoreDish(dish, preferences, historyCounts), nutritionScore: scoreMealCombination(dish) })).filter((dish) => dish.score > -999).sort((a, b) => b.score - a.score || b.nutritionScore - a.nutritionScore).slice(offset, offset + limit); }
 function buildTodayProgress(plans, chosenMealIds) { const mealKeys = ["breakfast", "lunch", "dinner", "snack"]; const planned = mealKeys.filter((meal) => plans[meal]).length; const completed = mealKeys.filter((meal) => chosenMealIds.includes(meal)).length; return { planned, completed, remaining: Math.max(planned - completed, 0) }; }
-function runSelfTests() { const rice = foods.find((food) => food.id === "rice"); const chicken = foods.find((food) => food.id === "chicken"); const maleDefault = calculateNutrition({ sex: "male", age: 35, height: 175, weight: 85, activity: "sedentary", goal: "standard_cut" }); const preferences = { avoidFoods: ["beef"], favoriteFoods: ["rice"], favoriteDishes: [], dislikedDishes: [], preferredScenes: [] }; const recs = getDishRecommendations({ mealId: "lunch", scene: "takeout", preferences, historyCounts: {} }); const eggPortion = practicalPortion(foods.find((food) => food.id === "egg_boiled"), 100); return [{ name: "男性 BMR：85kg / 175cm / 35岁", pass: nearlyEqual(bmr({ sex: "male", weight: 85, height: 175, age: 35 }), 1773.75, 0.01) }, { name: "60g 碳水 ≈ 214g 熟米饭", pass: nearlyEqual(gramsFor(rice, "carbs", 60), 214.29, 0.1) }, { name: "40g 蛋白 ≈ 129g 鸡胸肉", pass: nearlyEqual(gramsFor(chicken, "protein", 40), 129.03, 0.1) }, { name: "默认男性目标热量不低于保护线", pass: maleDefault.kcal >= 1500 }, { name: "标准三餐比例合计为100%", pass: Object.values(presetPlans.balanced_three.ratios).reduce((sum, value) => sum + value, 0) === 100 }, { name: "忌口食材不会出现在午餐推荐里", pass: recs.every((item) => item.proteinFoodId !== "beef") }, { name: "当前菜肴库不少于30条", pass: dishLibrary.length >= 30 }, { name: "两个鸡蛋约100克", pass: eggPortion.text.includes("100") }]; }
+function runSelfTests() { const rice = foods.find((food) => food.id === "rice"); const chicken = foods.find((food) => food.id === "chicken"); const maleDefault = calculateNutrition({ sex: "male", age: 35, height: 175, weight: 85, activity: "sedentary", goal: "standard_cut" }); const preferences = { avoidFoods: ["beef"], favoriteFoods: ["rice"], favoriteDishes: [], dislikedDishes: [], preferredScenes: [] }; const recs = getDishRecommendations({ mealId: "lunch", scene: "takeout", preferences, historyCounts: {} }); const eggPortion = practicalPortion(foods.find((food) => food.id === "egg_boiled"), 100); const breakfastScore = scoreMealCombination(dishLibrary.find((item) => item.id === "breakfast-oats-egg")); return [{ name: "男性 BMR：85kg / 175cm / 35岁", pass: nearlyEqual(bmr({ sex: "male", weight: 85, height: 175, age: 35 }), 1773.75, 0.01) }, { name: "60g 碳水 ≈ 214g 熟米饭", pass: nearlyEqual(gramsFor(rice, "carbs", 60), 214.29, 0.1) }, { name: "40g 蛋白 ≈ 129g 鸡胸肉", pass: nearlyEqual(gramsFor(chicken, "protein", 40), 129.03, 0.1) }, { name: "默认男性目标热量不低于保护线", pass: maleDefault.kcal >= 1500 }, { name: "标准三餐比例合计为100%", pass: Object.values(presetPlans.balanced_three.ratios).reduce((sum, value) => sum + value, 0) === 100 }, { name: "忌口食材不会出现在午餐推荐里", pass: recs.every((item) => item.proteinFoodId !== "beef") }, { name: "当前菜肴库不少于30条", pass: dishLibrary.length >= 30 }, { name: "两个鸡蛋约100克", pass: eggPortion.text.includes("100") }, { name: "健康早餐组合应有正向营养评分", pass: breakfastScore > 0 }]; }
 
 function CardShell({ children, className = "" }) { return <div className={`rounded-3xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</div>; }
 function Badge({ children, tone = "slate" }) { const classes = { slate: "bg-slate-100 text-slate-700", green: "bg-emerald-100 text-emerald-800", red: "bg-red-100 text-red-800", blue: "bg-blue-100 text-blue-800", amber: "bg-amber-100 text-amber-900", dark: "bg-slate-900 text-white" }; return <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${classes[tone] || classes.slate}`}>{children}</span>; }
@@ -331,10 +462,11 @@ function MealFlowModal({ open, onClose, mealMode, ratios, nutrition, preferences
   const targets = { carbs: nutrition.carbs * ratio, protein: nutrition.protein * ratio, fat: nutrition.fat * ratio, kcal: nutrition.kcal * ratio };
   const allRecommendations = getDishRecommendations({ mealId: selectedMeal, scene: selectedScene, preferences, historyCounts, limit: 999, offset: 0 });
   const recommendations = allRecommendations.slice(batch * 6, batch * 6 + 6);
+  const activeDietTip = useMemo(() => getDietTip({ mealId: selectedMeal, scene: selectedScene, page: "mealFlow" }), [selectedMeal, selectedScene]);
   const maxBatch = Math.max(Math.ceil(allRecommendations.length / 6) - 1, 0);
   function changeMeal(mealId) { setSelectedMeal(mealId); setBatch(0); }
   function changeScene(sceneId) { setSelectedScene(sceneId); setBatch(0); }
-  return <Modal open={open} title="开始一餐" onClose={onClose}><div className="space-y-5"><SectionTitle title="需要的时候再帮你一把" desc="这次不只给更像真实菜名的方案，也支持你一键换一批。" /><div className="flex flex-wrap gap-2">{meals.map((meal) => <MiniButton key={meal.id} active={selectedMeal === meal.id} onClick={() => changeMeal(meal.id)}>{meal.name}</MiniButton>)}</div><div className="flex flex-wrap gap-2">{[{ id: "home", name: "家里" }, { id: "takeout", name: "外卖" }, { id: "convenience", name: "便利店" }].map((scene) => <MiniButton key={scene.id} active={selectedScene === scene.id} onClick={() => changeScene(scene.id)}>{scene.name}</MiniButton>)}{allRecommendations.length > 6 ? <button className="rounded-2xl bg-amber-100 px-4 py-3 text-sm font-medium text-amber-900" onClick={() => setBatch(batch >= maxBatch ? 0 : batch + 1)}>换一批</button> : null}</div><CardShell><div className="p-5"><div className="flex items-center justify-between gap-3"><div><div className="text-lg font-semibold text-slate-900">{activeMeal?.name} 建议</div><div className="mt-1 text-sm text-slate-500">按你预设的 {ratioPercent}% 比例和偏好生成</div></div><Badge tone="green">{allRecommendations.length} 个候选</Badge></div><div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4"><MacroPill label="热量" value={round(targets.kcal)} suffix=" kcal" /><MacroPill label="碳水" value={round(targets.carbs)} suffix="g" /><MacroPill label="蛋白" value={round(targets.protein)} suffix="g" /><MacroPill label="脂肪上限" value={round(targets.fat)} suffix="g" /></div></div></CardShell><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{recommendations.map((dish) => { const mealItems = buildMealItems(dish, targets); return <CardShell key={dish.id}><div className="p-5"><div className="flex items-center justify-between gap-2"><div className="font-semibold text-slate-900">{dish.name}</div><Badge tone="amber">{dish.category}</Badge></div><div className="mt-2 text-sm text-slate-600">{dish.note}</div><div className="mt-3 space-y-2 text-sm text-slate-700">{mealItems.map((item) => <div key={item.name}>{item.name}：{item.text}</div>)}</div><div className="mt-4 flex flex-wrap gap-2">{dish.tags.map((tag) => <span key={tag} className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{tag}</span>)}</div><button className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white" onClick={() => onCompleteMeal(selectedMeal, dish.name)}>这餐我就按这个吃</button></div></CardShell>; })}</div></div></Modal>;
+  return <Modal open={open} title="开始一餐" onClose={onClose}><div className="space-y-5"><SectionTitle title="需要的时候再帮你一把" desc="这次不只给更像真实菜名的方案，也支持你一键换一批。" /><div className="flex flex-wrap gap-2">{meals.map((meal) => <MiniButton key={meal.id} active={selectedMeal === meal.id} onClick={() => changeMeal(meal.id)}>{meal.name}</MiniButton>)}</div><div className="flex flex-wrap gap-2">{[{ id: "home", name: "家里" }, { id: "takeout", name: "外卖" }, { id: "convenience", name: "便利店" }].map((scene) => <MiniButton key={scene.id} active={selectedScene === scene.id} onClick={() => changeScene(scene.id)}>{scene.name}</MiniButton>)}{allRecommendations.length > 6 ? <button className="rounded-2xl bg-amber-100 px-4 py-3 text-sm font-medium text-amber-900" onClick={() => setBatch(batch >= maxBatch ? 0 : batch + 1)}>换一批</button> : null}</div><CardShell className="border-none bg-amber-50"><div className="p-4"><div className="text-sm font-semibold text-amber-900">当前这餐的小妙招</div><div className="mt-2 text-sm leading-6 text-amber-900/90">{activeDietTip}</div></div></CardShell><CardShell><div className="p-5"><div className="flex items-center justify-between gap-3"><div><div className="text-lg font-semibold text-slate-900">{activeMeal?.name} 建议</div><div className="mt-1 text-sm text-slate-500">按你预设的 {ratioPercent}% 比例和偏好生成</div></div><Badge tone="green">{allRecommendations.length} 个候选</Badge></div><div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4"><MacroPill label="热量" value={round(targets.kcal)} suffix=" kcal" /><MacroPill label="碳水" value={round(targets.carbs)} suffix="g" /><MacroPill label="蛋白" value={round(targets.protein)} suffix="g" /><MacroPill label="脂肪上限" value={round(targets.fat)} suffix="g" /></div></div></CardShell><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{recommendations.map((dish) => { const mealItems = buildMealItems(dish, targets); return <CardShell key={dish.id}><div className="p-5"><div className="flex items-center justify-between gap-2"><div className="font-semibold text-slate-900">{dish.name}</div><Badge tone="amber">{dish.category}</Badge></div><div className="mt-2 text-sm text-slate-600">{dish.note}</div><div className="mt-3 space-y-2 text-sm text-slate-700">{mealItems.map((item) => <div key={item.name}>{item.name}：{item.text}</div>)}</div><div className="mt-4 flex flex-wrap gap-2">{dish.tags.map((tag) => <span key={tag} className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{tag}</span>)}</div><button className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white" onClick={() => onCompleteMeal(selectedMeal, dish.name)}>这餐我就按这个吃</button></div></CardShell>; })}</div></div></Modal>;
 }
 
 function FixPage() { return <div className="space-y-5"><CardShell><div className="p-5"><SectionTitle title="超了怎么修" desc="把纠偏也做成主入口，不让用户翻一堆资料。" /><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">{correctionRules.map((item) => <div key={item.title} className="rounded-2xl bg-slate-50 p-4"><div className="font-semibold text-slate-900">{item.title}</div><div className="mt-2 text-sm text-slate-600">{item.desc}</div></div>)}</div></div></CardShell></div>; }
@@ -350,15 +482,64 @@ function getGreeting(name) {
   return pool[index];
 }
 
-const dietTips = [
-  "先吃蛋白质和蔬菜，再吃主食，通常更容易稳住食量。",
-  "外卖想控一点，先从少酱汁、少额外浇头开始，比全都不吃更容易坚持。",
-  "鸡蛋不一定非得去蛋黄，重点是整天总量和做法，水煮通常比油煎更稳。",
-  "如果晚饭容易吃多，可以先喝点热汤或先吃菜，再决定主食要不要加。",
-];
+const dietTips = {
+  general: [
+    "先吃蛋白质和蔬菜，再吃主食，通常更容易稳住食量。",
+    "外卖想控一点，先从少酱汁、少额外浇头开始，比全都不吃更容易坚持。",
+    "鸡蛋不一定非得去蛋黄，重点是整天总量和做法，水煮通常比油煎更稳。",
+    "如果晚饭容易吃多，可以先喝点热汤或先吃菜，再决定主食要不要加。",
+    "一餐里主食有一个主角就够了，米饭、面、粥、馒头、面包通常没必要叠两份主食主角。",
+  ],
+  breakfast: [
+    "早餐更稳的结构通常是：1份主食 + 1份明确蛋白，奶类可以有，但牛奶和酸奶没必要同时上。",
+    "燕麦、玉米、红薯这类主食通常比白粥更耐饿；如果吃白粥，记得搭配鸡蛋或别的明确蛋白。",
+    "如果早餐只有面包和奶类，补一个鸡蛋，通常会比单吃更稳。",
+  ],
+  lunch: [
+    "午餐优先选真正的主蛋白，比如鸡胸、鱼、虾、牛肉；只靠酸奶、豆腐或一颗蛋，常常不够顶一整餐。",
+    "想吃粉面不是不能吃，关键是把蛋白补上、面量减一点，比硬忍着更容易长期执行。",
+    "盖饭类先从减饭、少酱汁开始，通常比完全不吃主食更容易坚持。",
+  ],
+  dinner: [
+    "晚餐优先保留明确蛋白，再根据白天情况决定主食量，比只吃一点点更稳。",
+    "如果晚餐想清淡一点，鱼、虾、鸡胸配半份主食，通常比粥配零碎小吃更稳。",
+    "晚餐如果已经有奶类，就别再额外补第二份奶类了，换成鸡蛋或主蛋白通常更合理。",
+  ],
+  snack: [
+    "加餐的关键不是吃成第二顿正餐，而是轻一点、稳一点：酸奶、牛奶、鸡蛋这类更合适。",
+    "加餐如果已经喝了奶，就没必要再叠第二份奶类，控制住总量更重要。",
+    "真饿的时候，加餐优先补蛋白或轻主食，不要顺手开成一整顿。",
+  ],
+  takeout: [
+    "外卖想控一点，优先挑看得见蛋白来源的餐，再从饭量和酱汁下手。",
+    "汤粉、盖饭、炒饭都能吃，关键不是禁掉，而是把量和配菜修正到更稳。",
+    "点外卖时如果主食偏重，后面一餐就先减主食，不要连蛋白一起砍掉。",
+  ],
+  convenience: [
+    "便利店选餐时，优先看有没有主食 + 蛋白的组合；如果只有面包和奶类，补一个鸡蛋通常会更稳。",
+    "便利店最怕的是全是零碎小甜食，宁可简单一点，也要先把蛋白补上。",
+    "便利店加餐优先单一奶类、鸡蛋、玉米这类容易收住的东西。",
+  ],
+  home: [
+    "家里吃饭最容易做稳的，不是复杂菜谱，而是先定好主食和蛋白，再按胃口加配菜。",
+    "家里如果吃粥，尽量同时把鸡蛋、豆腐或别的明确蛋白配上。",
+  ],
+};
 
-function getDietTip() {
-  return dietTips[new Date().getDate() % dietTips.length];
+function pickTip(list, seed = 0) {
+  if (!list?.length) return "";
+  return list[Math.abs(seed) % list.length];
+}
+
+function getDietTip(context = {}) {
+  const { mealId = "", scene = "", page = "home" } = context;
+  const daySeed = new Date().getDate();
+  const scoped = [];
+  if (mealId && dietTips[mealId]) scoped.push(...dietTips[mealId]);
+  if (scene && dietTips[scene]) scoped.push(...dietTips[scene]);
+  if (page === "home") scoped.push(...dietTips.general);
+  const pool = scoped.length ? scoped : dietTips.general;
+  return pickTip(pool, daySeed + (mealId ? mealId.length : 0) + (scene ? scene.length : 0));
 }
 
 function TestPage() { const tests = useMemo(() => runSelfTests(), []); const passed = tests.filter((test) => test.pass).length; return <CardShell><div className="p-5"><div className="mb-4 flex items-center justify-between gap-3"><SectionTitle title="逻辑自检" desc="保留最小验证页，避免改着改着把推荐逻辑改坏。" /><Badge tone={passed === tests.length ? "green" : "red"}>{passed}/{tests.length} 通过</Badge></div><div className="space-y-2">{tests.map((test) => <div key={test.name} className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 text-sm"><span>{test.name}</span><span className={test.pass ? "font-semibold text-emerald-700" : "font-semibold text-red-700"}>{test.pass ? "PASS" : "FAIL"}</span></div>)}</div></div></CardShell>; }
@@ -372,6 +553,7 @@ export default function NutritionWebToolMVP() {
   const [page, setPage] = useState("home");
   const goPage = (next) => setPage(next);
   const [mealFlowOpen, setMealFlowOpen] = useState(false);
+  const homeDietTip = useMemo(() => getDietTip({ page: "home" }), []);
   const [form, setForm] = useState(stored?.form || defaultProfile.form);
   const [mealMode, setMealMode] = useState(stored?.mealMode || defaultProfile.mealMode);
   const [ratios, setRatios] = useState(stored?.ratios || defaultProfile.ratios);
@@ -417,5 +599,5 @@ export default function NutritionWebToolMVP() {
 
   function finishProfile() { setProfileCompleted(true); goPage("home"); }
 
-  return <div className="min-h-screen bg-slate-100 px-3 py-4 text-slate-900 sm:px-4 md:px-8 md:py-8"><div className="mx-auto max-w-5xl space-y-5">{page === "home" ? <><CardShell className="overflow-hidden border-none bg-white shadow-sm"><div className="p-5 sm:p-6"><div className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{getGreeting(nickname)}</div><div className="mt-2 text-sm text-slate-500">不用想太多，按顺手的入口直接点就行。</div></div></CardShell><div className="grid gap-3"><button className="rounded-3xl bg-slate-900 px-5 py-5 text-left text-white shadow-sm" onClick={() => setMealFlowOpen(true)}><div className="text-lg font-semibold">准备用餐</div><div className="mt-1 text-sm text-slate-300">{Object.keys(activeDayPlan || {}).length ? "今天已有提前安排，点进去会优先按你的计划参考。" : "先选是哪一餐，我直接给你推荐。"}</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("today")}><div className="text-lg font-semibold">今日计划</div><div className="mt-1 text-sm text-slate-500">看看今天有哪些已经提前定好的餐。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("planning")}><div className="text-lg font-semibold">明日餐食</div><div className="mt-1 text-sm text-slate-500">提前把明天想好，饭点少纠结。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("personal")}><div className="text-lg font-semibold">资料卡</div><div className="mt-1 text-sm text-slate-500">查看和更新你的建档资料。</div></button><CardShell className="border-none bg-amber-50"><div className="p-5"><div className="text-sm font-semibold text-amber-900">饮食小妙招</div><div className="mt-2 text-sm leading-6 text-amber-900/90">{getDietTip()}</div></div></CardShell></div></> : null}{page !== "home" ? <div className="flex gap-2"><button className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-700 shadow-sm" onClick={() => goPage("home")}>首页</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "today" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("today")}>今日计划</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "planning" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("planning")}>明日餐食</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "personal" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("personal")}>资料卡</button></div> : null}{!ratioValid && page !== "home" ? <CardShell><div className="p-5 text-sm text-red-700">当前餐次比例还没调到 100%，推荐会受影响，建议先去资料卡完成配置。</div></CardShell> : null}{page === "planning" && <PlanningPage mealMode={mealMode} preferences={preferences} historyCounts={historyCounts} tomorrowPlan={tomorrowPlan} setTomorrowPlan={setTomorrowPlan} tomorrowPlanDate={tomorrowPlanDate} setTomorrowPlanDate={setTomorrowPlanDate} setPage={setPage} />}{page === "today" && <TodayPage nutrition={nutrition} mealMode={mealMode} activeDayPlan={activeDayPlan} chosenMealIds={chosenMealIds} nickname={nickname} setPage={setPage} activeDayPlanDate={activeDayPlanDate} />}{page === "personal" && <PersonalInfoPage form={form} set={set} nutrition={nutrition} mealMode={mealMode} onMealModeChange={handleMealModeChange} ratios={ratios} onRatioChange={handleRatioChange} activePreset={activePreset} onApplyPreset={applyPreset} preferences={preferences} setPreferences={setPreferences} guestId={guestId} nickname={nickname} setNickname={setNickname} setPage={setPage} />}</div><MealFlowModal open={mealFlowOpen} onClose={() => setMealFlowOpen(false)} mealMode={mealMode} ratios={ratios} nutrition={nutrition} preferences={preferences} historyCounts={historyCounts} onCompleteMeal={handleCompleteMeal} />{ready && !guestId ? <WelcomeOverlay nickname={nickname} setNickname={setNickname} onStart={startGuestMode} /> : null}{ready && guestId && !profileCompleted ? <OnboardingCard nickname={nickname} setNickname={setNickname} form={form} set={set} mealMode={mealMode} setMealMode={handleMealModeChange} ratios={ratios} setRatios={setRatios} preferences={preferences} setPreferences={setPreferences} onFinish={finishProfile} /> : null}</div>;
+  return <div className="min-h-screen bg-slate-100 px-3 py-4 text-slate-900 sm:px-4 md:px-8 md:py-8"><div className="mx-auto max-w-5xl space-y-5">{page === "home" ? <><CardShell className="overflow-hidden border-none bg-white shadow-sm"><div className="p-5 sm:p-6"><div className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{getGreeting(nickname)}</div><div className="mt-2 text-sm text-slate-500">不用想太多，按顺手的入口直接点就行。</div></div></CardShell><div className="grid gap-3"><button className="rounded-3xl bg-slate-900 px-5 py-5 text-left text-white shadow-sm" onClick={() => setMealFlowOpen(true)}><div className="text-lg font-semibold">准备用餐</div><div className="mt-1 text-sm text-slate-300">{Object.keys(activeDayPlan || {}).length ? "今天已有提前安排，点进去会优先按你的计划参考。" : "先选是哪一餐，我直接给你推荐。"}</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("today")}><div className="text-lg font-semibold">今日计划</div><div className="mt-1 text-sm text-slate-500">看看今天有哪些已经提前定好的餐。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("planning")}><div className="text-lg font-semibold">明日餐食</div><div className="mt-1 text-sm text-slate-500">提前把明天想好，饭点少纠结。</div></button><button className="rounded-3xl bg-white px-5 py-5 text-left text-slate-900 shadow-sm" onClick={() => goPage("personal")}><div className="text-lg font-semibold">资料卡</div><div className="mt-1 text-sm text-slate-500">查看和更新你的建档资料。</div></button><CardShell className="border-none bg-amber-50"><div className="p-5"><div className="text-sm font-semibold text-amber-900">饮食小妙招</div><div className="mt-2 text-sm leading-6 text-amber-900/90">{homeDietTip}</div></div></CardShell></div></> : null}{page !== "home" ? <div className="flex gap-2"><button className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-700 shadow-sm" onClick={() => goPage("home")}>首页</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "today" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("today")}>今日计划</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "planning" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("planning")}>明日餐食</button><button className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${page === "personal" ? "bg-slate-900 text-white" : "bg-white text-slate-700"}`} onClick={() => goPage("personal")}>资料卡</button></div> : null}{!ratioValid && page !== "home" ? <CardShell><div className="p-5 text-sm text-red-700">当前餐次比例还没调到 100%，推荐会受影响，建议先去资料卡完成配置。</div></CardShell> : null}{page === "planning" && <PlanningPage mealMode={mealMode} preferences={preferences} historyCounts={historyCounts} tomorrowPlan={tomorrowPlan} setTomorrowPlan={setTomorrowPlan} tomorrowPlanDate={tomorrowPlanDate} setTomorrowPlanDate={setTomorrowPlanDate} setPage={setPage} />}{page === "today" && <TodayPage nutrition={nutrition} mealMode={mealMode} activeDayPlan={activeDayPlan} chosenMealIds={chosenMealIds} nickname={nickname} setPage={setPage} activeDayPlanDate={activeDayPlanDate} />}{page === "personal" && <PersonalInfoPage form={form} set={set} nutrition={nutrition} mealMode={mealMode} onMealModeChange={handleMealModeChange} ratios={ratios} onRatioChange={handleRatioChange} activePreset={activePreset} onApplyPreset={applyPreset} preferences={preferences} setPreferences={setPreferences} guestId={guestId} nickname={nickname} setNickname={setNickname} setPage={setPage} />}</div><MealFlowModal open={mealFlowOpen} onClose={() => setMealFlowOpen(false)} mealMode={mealMode} ratios={ratios} nutrition={nutrition} preferences={preferences} historyCounts={historyCounts} onCompleteMeal={handleCompleteMeal} />{ready && !guestId ? <WelcomeOverlay nickname={nickname} setNickname={setNickname} onStart={startGuestMode} /> : null}{ready && guestId && !profileCompleted ? <OnboardingCard nickname={nickname} setNickname={setNickname} form={form} set={set} mealMode={mealMode} setMealMode={handleMealModeChange} ratios={ratios} setRatios={setRatios} preferences={preferences} setPreferences={setPreferences} onFinish={finishProfile} /> : null}</div>;
 }
